@@ -6,7 +6,7 @@ theme: "starter-hugo-academic"
 
 title: Kevin Zolea # Website name
 baseurl: 'https://testwang.netlify.app/' # Website URL
-copyright: '' # Footer text, e.g. '© {year} Me'
+copyright: '© Kevin Zolea (2022)' # Footer text, e.g. '© {year} Me'
 
 ############################
 ## LANGUAGE
