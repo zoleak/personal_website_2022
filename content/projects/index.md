@@ -1,5 +1,5 @@
 ---
-summary: More about my work experience
-title: "Projects"
+summary: 
+title: ""
 type: widget_page
 ---
