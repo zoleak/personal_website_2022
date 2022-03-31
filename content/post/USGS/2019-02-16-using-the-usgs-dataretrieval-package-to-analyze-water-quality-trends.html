@@ -1,0 +1,165 @@
+---
+title: "Using the USGS dataRetrieval package to analyze continuous water quality data"
+author: "Kevin Zolea"
+date: '2019-02-16'
+header:
+  image: 'headers/colorado_water.jpg'
+  caption: ''
+  focal_point: ''
+slug: using-the-usgs-dataretrieval-package-to-analyze-water-quality-trends
+summary: Introduction on using the USGS dataRetrieval package to create a graph in
+  ggplot2 to visualize total dissolved solid
+tags:
+- R
+- Water Quality
+- Roadsalt
+categories:
+- R
+- Roadsalt
+- Water Quality
+---
+
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>Being that I work for the <a href="https://www.nj.gov/dep/wms/" target="_blank">Division of Water Monitoring &amp; Standards</a>, I have to analyze a lot of water quality data. A majority of the data is in house from the samples we collect but most times I have to download data from online sources. These online sources usually consist of the same organizations and most have a pretty straight forward way of getting access to the data. However, the process of going to that organization’s website and getting whatever data you need is a bit time consuming. I always look for ways that I can automate a task and not have to do the same things over and over again. It wasn’t until recently that I learned about the <a href="https://cran.r-project.org/web/packages/dataRetrieval/dataRetrieval.pdf" target="_blank">dataRetrieval</a> package, which can do exactly that.</p>
+</div>
+<div id="what-is-the-dataretrieval-package-how-does-it-work" class="section level3">
+<h3>What is the <code>dataRetrieval</code> package &amp; how does it work?</h3>
+<p>The <code>dataRetrieval</code> package is a collection of functions to help retrieve U.S. Geological Survey (<a href="https://www.usgs.gov" target="_blank">USGS</a>) and U.S. Environmental Protection Agency (<a href="https://www.epa.gov" target="_blank">EPA</a>) water quality and hydrology data from web services. With the dataRetrieval package you can discover, access, retrieve, and parse water data. The data comes from numerous different sources. The image below provides a nice overview of the different sources, data types, metadata, time series type, formats, and output.</p>
+<div class="figure">
+<img src="/img/data_source_example.png" alt="Image Credit: USGS" />
+<p class="caption">Image Credit: USGS</p>
+</div>
+<p>I’m not going to go into all the different functions and usage of the <code>dataRetrieval</code> package but if you would like to learn more here are some of the sources I found the most useful:</p>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html#usgs-web-retrievals" target="_blank">Introduction to the dataRetrieval package</a></li>
+<li><a href="https://acwi.gov/monitoring/conference/2016/0_monday_may2/A1B1/dataRetrieval%20Tutorial_secure.pdf" target="_blank">dataRetrieval Tutorial</a></li>
+<li><a href="https://pubs.usgs.gov/tm/04/a10/pdf/tm4A10.pdf" target="_blank">USGS PDF</a></li>
+</ul>
+</div>
+<div id="what-i-will-show-in-this-blog-post" class="section level3">
+<h3>What I will show in this blog post</h3>
+<p>In this blog post I will discuss the usage of the <code>readNWISuv()</code> function and how to create a nice plot with the <code>ggplot2</code> package. The <code>readNWISuv()</code> function imports data from the <a href="https://waterdata.usgs.gov/nwis" target="_blank">NWIS</a> web service. Specifically, this function retrieves instantaneous water quality data. In order to use this function you must have the following arguments:</p>
+<p><code>readNWISuv(siteNumbers, parameterCd, startDate = &quot;&quot;, endDate = &quot;&quot;,tz = &quot;UTC&quot;)</code></p>
+<ul>
+<li><code>siteNumbers</code>: A character vector of USGS site numbers (or multiple sites). This is usually an 8 digit number. You can use this <a href="https://maps.waterdata.usgs.gov/mapper/index.html" target="_blank">map</a> to find a site your interested in.</li>
+<li><code>parameterCd</code>: Character USGS parameter code.This is usually an 5 digit number. To find a parameter code of interest you can type in <code>parameterCdFile</code>. This allows you to explore the USGS parameter codes.</li>
+<li><code>startDate</code>: character starting date for data retrieval in the form YYYY-MM-DD.</li>
+<li><code>endDate</code>: character ending date for data retrieval in the form YYYY-MM-DD.</li>
+<li><code>tz</code>: character to set timezone attribute of dateTime. Default is “UTC”, and converts the date times to UTC. There are numerous different possible values to use. For example, if you wanted it to be in Eastern Standard Time, you would use <code>&quot;America/New_York&quot;</code></li>
+</ul>
+</div>
+<div id="install-and-load-dataretrieval-package-from-cran" class="section level3">
+<h3>Install and load <code>dataRetrieval</code> package from cran</h3>
+<p>```install.packages(“dataRetrieval”)</p>
+<p>library(dataRetrieval) ```</p>
+</div>
+<div id="pull-data-with-the-readnwisuv-function" class="section level3">
+<h3>Pull data with the <code>readNWISuv()</code> function</h3>
+<p>For my analysis I am going to pull continuous specific conductance (SC) data for a site of intereset in NJ. With this specific conductance data, I will calculate Total dissolved solids (TDS). I will do this by using an equation from a correlation I made between SC &amp; TDS. Being that this isn’t the focus of the post, I will not go in detail about this. However, in a subsequent post I will explain how I did this.</p>
+<p><code>USGS_continuous_sc_data&lt;-readNWISuv(&quot;01408029&quot;,&quot;00095&quot;,tz = &quot;America/New_York&quot;)</code></p>
+<p>For simplicity, I am only looking up one site and one type of parameter. You can look up multiple sites and parameters in one pull. Now lets take a look at a preview of the pull we just made.</p>
+<pre><code>##   agency_cd  site_no            dateTime X_00095_00000 X_00095_00000_cd
+## 1      USGS 01408029 2007-10-01 01:00:00           246                A
+## 2      USGS 01408029 2007-10-01 01:15:00           246                A
+## 3      USGS 01408029 2007-10-01 01:30:00           246                A
+## 4      USGS 01408029 2007-10-01 01:45:00           246                A
+## 5      USGS 01408029 2007-10-01 02:00:00           246                A
+## 6      USGS 01408029 2007-10-01 02:15:00           246                A
+##              tz_cd
+## 1 America/New_York
+## 2 America/New_York
+## 3 America/New_York
+## 4 America/New_York
+## 5 America/New_York
+## 6 America/New_York</code></pre>
+<p>The names of the columns in the dataframe can be described as follows:</p>
+<ul>
+<li><p><code>agency_cd</code>: The NWIS code for the agency reporting the data</p></li>
+<li><p><code>site_no</code>: The USGS site number</p></li>
+<li><p><code>dateTime</code>: The date and time of the value converted to UTC</p></li>
+<li><p><code>X_00095_00000</code>: The values of the parameter we gave to the function.</p></li>
+<li><p><code>X_00095_00000_cd</code>: The statistic code</p></li>
+<li><p><code>tz_cd</code>: The time zone code for dateTime</p></li>
+</ul>
+<p>You can clean up the names with the <code>reenameNWISColumns()</code> function if you’d like.</p>
+</div>
+<div id="we-have-the-data-now-what" class="section level3">
+<h3>We have the data… now what?</h3>
+<p>Now that we have retrieved the data, we can now start manipulating it and create a plot. We will create the plot using the <code>ggplot2</code> package. I mentioned before that I was going to calculate TDS. Just to give some background… the reason I am doing this is because of a project I am working on that deals with roadsalt. I figured I would include it in this post just to show that you have a great deal of options in R. I will discuss my roadsalt research in more detail in later posts!</p>
+</div>
+<div id="what-is-the-ggplot2-package" class="section level3">
+<h3>What is the ggplot2 package?</h3>
+<p>The <a href="https://www.rdocumentation.org/packages/ggplot2/versions/3.1.0" target="_blank">ggplot2</a> package is a system for ‘declaratively’ creating graphics, based on “The Grammar of Graphics”. It is a great way to visualize the data you are analyzing. With ggplot2, you have a lot of flexibility with the amount of customization you can give your plot. In my opinion, I think it is very easy to learn and it produces beautiful high quality plots. To learn more about ggplot2, I recommend <a href="http://r-statistics.co/Complete-Ggplot2-Tutorial-Part1-With-R-Code.html" target="_blank">The Complete ggplot2 Tutorial</a>.</p>
+</div>
+<div id="full-code-used-to-create-plot" class="section level3">
+<h3>Full code used to create plot:</h3>
+<pre><code>library(dataRetrieval)
+library(ggplot2)
+library(dplyr)
+library(plyr)
+
+### Vector of sites with continuous specific conductance data ###
+siteNumber&lt;-c(&quot;01408029&quot;)
+
+### Parameter code for specific conductance ###
+parameterCd&lt;-&quot;00095&quot;
+
+### Function that retrieves near real time continuous data for specific sites and parameters ###
+USGS_continuous_sc_data&lt;-readNWISuv(siteNumber,parameterCd,tz = &quot;America/New_York&quot;)
+
+### Filter dataframe ###
+USGS_continuous_sc_data&lt;-USGS_continuous_sc_data%&gt;%
+  dplyr::select(site_no,dateTime,X_00095_00000)%&gt;%
+  dplyr::rename(Site = site_no,Specific_conductance = X_00095_00000)
+  
+### Calculate TDS based on continuous Specific Conductance data and eq from correlation plots ###
+final_USGS_data_TDS&lt;-USGS_continuous_sc_data%&gt;%
+  dplyr::mutate(Calculated_TDS = Specific_conductance * 0.572 +6.19)
+
+### theme for plots ###
+graph_theme_T&lt;- theme_linedraw()+
+  theme(plot.title=element_text(size=15, face=&quot;bold&quot;,vjust=0.5,hjust = 0.5),
+        plot.subtitle = element_text(size=15, face=&quot;bold&quot;,vjust=0.5,hjust = 0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        plot.margin = unit(c(1.5,2,4,2), &quot;lines&quot;), 
+        legend.position = &quot;bottom&quot;,
+        legend.background = element_blank(),
+        legend.text=element_text(size=10, face=&quot;bold&quot;))
+        
+### Make plot of data ###
+      
+p&lt;-ggplot(final_USGS_data_TDS, aes(x=dateTime,y=Calculated_TDS)) +
+  geom_line(aes(color = &quot;USGS Continuous Data&quot;),
+    stat = &quot;identity&quot;,size=1.3)+
+  scale_y_continuous(expand = c(0, 0), limits = c(0, max(final_USGS_data_TDS$Calculated_TDS)))+
+  ggtitle(&quot;Total Dissolved Solids (TDS) Concentration (mg/L)&quot;) +
+  labs(subtitle =paste(&quot;USGS Site:&quot;,final_USGS_data_TDS$Site,sep = &#39;&#39;))+
+  xlab(&quot;Year&quot;) + ylab(&quot;TDS Concentration (mg/L)&quot;) +
+  geom_hline(aes(yintercept = 500,color=&quot;Freshwater Aquatic Life Criteria for TDS = 500 mg/L&quot;),size=1.3,alpha=0.6)+
+  scale_color_manual(&quot;&quot;,
+                     values = c(&quot;USGS Continuous Data&quot;=&quot;#037907&quot;,
+                                &quot;Freshwater Aquatic Life Criteria for TDS = 500 mg/L&quot;=&quot;red&quot;))+
+  
+  graph_theme_T 
+
+p
+  </code></pre>
+</div>
+<div id="final-product" class="section level3">
+<h3>Final Product:</h3>
+<p><img src="/post/2019-02-16-using-the-usgs-dataretrieval-package-to-analyze-water-quality-trends_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="what-is-this-plot-showing" class="section level3">
+<h3>What is this plot showing?</h3>
+<p>This plot is showing the calculated TDS concentration for the selected site from 2007- present day. The red line indicates the Freshwater Aquatic Life Criteria for TDS. In the most simpliest terms, when the graph shows the TDS concentration (green line) going over the red line, TDS is over the standard.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>As you can see, the <code>dataRetrieval</code> package is a very useful tool for water quality analysis. There is sooo much data you can obtain with just the ease of writing a few lines of code! I only touched base on <strong>1</strong> function! There are so many different functions you can use to gain access to all different types of water quality data. Definitly look over the resources I included in the beginning if you want to learn more. I know this post was very basic but I hope it has helped you in some way. If you have any questions feel free to reach out to me!</p>
+</div>

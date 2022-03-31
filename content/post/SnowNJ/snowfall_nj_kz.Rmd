@@ -1,0 +1,190 @@
+---
+title: "Making a plot of December snowfall data in NJ with R's ggplot2 & rnoaa"
+author: "Kevin Zolea"
+date: "2019-12-20"
+slug: 
+categories:
+  - R
+tags:
+  - R
+  - ggplot2
+header:
+  image: ''
+  caption: ''
+  focal_point: ''
+summary: Using the rnoaa package to get weather data into R and plot with ggplot2
+---
+---
+## What is this post about?
+
+Today on my way to work I was speaking to my girlfriend on the phone and somehow a conversation started about what are the chances that we will have a white Christmas this year. Being that Christmas is only a few days out and the fact that I love anything relating to the environment and data. I figured I would get to the bottom of this question and analyze some historical data to see what the past 10 years have shown. I have read some articles on this topic but figured it would be a fun little project to do in R. So in this post I will show you how you can pull data into R and create a cool plot with the ```ggplot2``` package. Being that I live in New Jersey, I will analyze data from New Jersey weather stations near me.
+
+## Acquiring the data
+
+There are numerous ways to access weather data online but for my learning purposes and hopes that this post will be helpful to someone else, I am going to use the ```rnoaa``` package. The [rnoaa](https://docs.ropensci.org/rnoaa/index.html){target="_blank"} package is an R interface to many of NOAA's data sources. It is a package maintained by [rOpenSci](https://ropensci.org/){target="_blank"}. In short, the ```rnoaa``` package makes it extremely easy to access data from NOAA's API. One of the best parts about this package is it brings the data into R in an easy to use format. Being that it would take a great deal of time to understand how to make requests to NOAA's API, this package takes away most of the leg work. To start, you need to request a key to gain access to NOAA's API. You can do this by going [here](https://www.ncdc.noaa.gov/cdo-web/token){target="_blank"} and provide your email. Within seconds you should receive an email with your key. 
+
+Now that we have our key, we can access any of the data sources in ```rnoaa```. You can see the full list of data sets by going to [rnoaa's website](https://docs.ropensci.org/rnoaa/index.html){target="_blank"}. For this blog post, I am going to access data from the Global Historical Climate Network (GHCN) dataset. This dataset includes daily land surface observations from weather stations around the world. Since I want snowfall data for the past 10 years, this is a great place to get it. The function in ```rnoaa``` that can do such a query is ```meteo_pull_monitors```. This function takes a vector of one or more weather stations IDs from the GHCN dataset and joins them together in a single data frame. Before we can do this ,however, we need to figure out which stations we want data from. To do this let's use the ```ncdc_stations``` function and put in the FIPS code for NJ (Middlesex County).
+
+```
+
+
+# If rnoaa isn't installed use the following first before trying to load it 
+# install.packages('rnoaa')
+
+library(rnoaa)
+
+key<-"GmjHeChrRWYy..."
+
+stations <- ncdc_stations(datasetid='GHCND', 
+              locationid='FIPS:34023',
+              token = key)
+
+stations$data  
+
+
+```
+```{r echo=FALSE}
+library(rnoaa)
+
+key<-"GmjHeChrRWYyAcMWTFhNuYQcHYvPSrzw"
+
+stations <- ncdc_stations(datasetid='GHCND', 
+                          locationid='FIPS:34023',
+                          token = key)
+
+head(stations$data)
+
+```
+
+This gives us the necessary information so we can start to pull the data. We can see what the minimum dates, maximum dates, latitude, station name, station ID, etc. so we can start getting an idea of what the data universe is for the stations around our area of interest. For my specific analysis, I want to find the stations with at least 10 years of data inside Middlesex County, NJ. From the looks of it, it seems as if the only ones are the following:
+
+```
+middlesex_stations<-c("US1NJMD0062","US1NJMD0002","US1NJMD0063","US1NJMD0009",
+            "US1NJMD0024","GHCND:US1NJMD0028")
+```
+## Pull data from NOAA's API with ```meteo_pull_monitors```
+
+Now it's time to use the ```meteo_pull_monitors``` function! This function (which is the main function to get the data) has a few arguments you can give it. A **brief** description of each one is below:
+
+* monitors - A character vector listing the station IDs for all weather stations the user would like to pull
+* keep_flags - TRUE/FALSE to keep any flags that each weather variable might have associated with the data
+* date_min - A character string giving the earliest date the user would like in the final output formatted as "yyyy-mm-dd"
+* date_max - A character string giving the latest date the user would like in the final output formatted as "yyyy-mm-dd"
+* var - A character vector specifying the weather parameters to keep in the final data (ex: ```"SNOW"```) A full list of the different possible weather variations can be found [here](https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt){target="_blank"}
+
+```
+middlesex_snow<-meteo_pull_monitors(monitors=middlesex_stations,var = "SNOW")
+
+```
+
+Taking a look at the data frame we should see something like this:
+```{r echo=FALSE, message=FALSE}
+library(rnoaa)
+key<-"GmjHeChrRWYyAcMWTFhNuYQcHYvPSrzw"
+
+middlesex_stations<-c("US1NJMD0002","US1NJMD0009",
+            "US1NJMD0024","GHCND:US1NJMD0028")
+middlesex_snow<-meteo_pull_monitors(monitors=middlesex_stations,var = "SNOW")
+head(middlesex_snow)
+```
+
+From my very ***basic*** understanding of the package, I believe the warning message above is because the station ```GHCND:US1NJMD0028``` doesn't have the variable ```"SNOW"```. So this now leads us with only three stations to look at it. 
+
+## Filter the data frame with ```dplyr```
+
+Next, I want to filter the data frame to only include data for the December months, get rid of any missing data, and convert mm to inches. I am going to do this with the ```dplyr``` package. The ```dplyr``` package is apart of the ```tidyverse``` and is a great resource for data manipulation. You can learn more about the ```dplyr``` package [here](https://dplyr.tidyverse.org/){target="_blank"}
+
+```
+library(tidyverse)
+library(lubridate)
+library(measurements) # used to convert from mm to in
+
+middlesex_stations<-middlesex_snow%>%
+  dplyr::mutate(month = lubridate::month(date), snow = conv_unit(snow,"mm","inch"))%>%
+  dplyr::filter(!snow == is.na(snow),month == 12)
+
+```
+After these filters, this leaves us with a data frame consisting of 39 obs. of 4 variables
+
+## Make plot with ```ggplot2```
+
+One of the most popular data visualization in R is with ```ggplot2```. I personally like ```ggplot2``` because of how easy it is to learn/use and how great it works with the rest of the ```tidyverse```. To learn more about ```ggplot2``` head over to the [website](https://ggplot2.tidyverse.org/){target="_blank"}. With just two lines of code we can make a plot with the data frame we pulled from ```rnoaa``` above. 
+
+```
+library(tidyverse)
+
+
+ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line()
+
+```
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(rnoaa)
+library(tidyverse)
+library(measurements)
+
+#middlesex_stations<-c("US1NJMD0002","US1NJMD0009",
+      #      "US1NJMD0024","GHCND:US1NJMD0028")
+#middlesex_snow<-meteo_pull_monitors(monitors=middlesex_stations,var = "SNOW")
+
+middlesex_stations<-middlesex_snow%>%
+  dplyr::mutate(month = lubridate::month(date), snow = conv_unit(snow,"mm","inch"))%>%
+  dplyr::filter(!snow == is.na(snow),month == 12)
+
+ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line()
+
+
+```
+
+As we can see from this plot, these three stations haven't gotten a great deal of snow in December within the past 10 years. Granted, there are some gaps in the dataset and this probably isn't the best dataset we could have used but it's good enough for this blog post. One point of this plot that specifically stands out is the 22.9 in. snow total for US1NJMD0002 in 2010. This was a major storm that hit the east coast on December 27, 2010. The "Boxing Day Blizzard of 2010", as they called it, was a rapidly developing nor'easter that completely tore through New Jersey. This is very noticeable in the plot, as a majority of the snowfall events didn't even go over 5 in. Another thing to note after looking over the data frame is that there was no day in the past 10 years where there was snowfall on Christmas.
+
+## Customize your new ggplot
+
+Let's take it a step further and customize the plot we just made. For fun, let's try and find a picture of snow from the web and add it to the background. We can do this by using the [```ggimage```](https://cran.r-project.org/web/packages/ggimage/vignettes/ggimage.html) package. The ```ggimage``` package is a great package to use images in ```ggplot2```.
+
+#### Add background image from web to plot
+
+```
+library(ggimage)
+
+p<-ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line()
+
+img<-"http://funny-photo.s3.amazonaws.com/preview/snow_effect/falling_snow_effect.jpeg"
+ggbackground(p,img)
+
+```
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(rnoaa)
+library(tidyverse)
+library(measurements)
+library(ggimage)
+library(ggpubr)
+
+key<-"GmjHeChrRWYyAcMWTFhNuYQcHYvPSrzw"
+
+middlesex_stations<-c("US1NJMD0002","US1NJMD0009",
+            "US1NJMD0024","GHCND:US1NJMD0028")
+middlesex_snow<-meteo_pull_monitors(monitors=middlesex_stations,var = "SNOW")
+
+
+middlesex_stations<-middlesex_snow%>%
+  dplyr::mutate(month = lubridate::month(date), snow = conv_unit(snow,"mm","inch"))%>%
+  dplyr::filter(!snow == is.na(snow),month == 12)
+
+
+p<-ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line(size=2)
+
+img<-"http://funny-photo.s3.amazonaws.com/preview/snow_effect/falling_snow_effect.jpeg"
+
+ggbackground(p,img)
+```
+
+There's a lot more customization you can do but that's for another day. That's the awesome thing about the ```ggplot2``` the options are endless for the amount of creativity you can pour into your plots. I hope you found this post helpful. If you have any questions, comments, or concerns please feel free to comment below. Thanks!
+
+
+
+
+

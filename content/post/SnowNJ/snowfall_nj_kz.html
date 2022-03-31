@@ -1,0 +1,139 @@
+---
+title: "Making a plot of December snowfall data in NJ with R's ggplot2 & rnoaa"
+author: "Kevin Zolea"
+date: "2019-12-20"
+slug: 
+categories:
+  - R
+tags:
+  - R
+  - ggplot2
+header:
+  image: ''
+  caption: ''
+  focal_point: ''
+summary: Using the rnoaa package to get weather data into R and plot with ggplot2
+---
+
+
+
+<hr />
+<div id="what-is-this-post-about" class="section level2">
+<h2>What is this post about?</h2>
+<p>Today on my way to work I was speaking to my girlfriend on the phone and somehow a conversation started about what are the chances that we will have a white Christmas this year. Being that Christmas is only a few days out and the fact that I love anything relating to the environment and data. I figured I would get to the bottom of this question and analyze some historical data to see what the past 10 years have shown. I have read some articles on this topic but figured it would be a fun little project to do in R. So in this post I will show you how you can pull data into R and create a cool plot with the <code>ggplot2</code> package. Being that I live in New Jersey, I will analyze data from New Jersey weather stations near me.</p>
+</div>
+<div id="acquiring-the-data" class="section level2">
+<h2>Acquiring the data</h2>
+<p>There are numerous ways to access weather data online but for my learning purposes and hopes that this post will be helpful to someone else, I am going to use the <code>rnoaa</code> package. The <a href="https://docs.ropensci.org/rnoaa/index.html" target="_blank">rnoaa</a> package is an R interface to many of NOAA’s data sources. It is a package maintained by <a href="https://ropensci.org/" target="_blank">rOpenSci</a>. In short, the <code>rnoaa</code> package makes it extremely easy to access data from NOAA’s API. One of the best parts about this package is it brings the data into R in an easy to use format. Being that it would take a great deal of time to understand how to make requests to NOAA’s API, this package takes away most of the leg work. To start, you need to request a key to gain access to NOAA’s API. You can do this by going <a href="https://www.ncdc.noaa.gov/cdo-web/token" target="_blank">here</a> and provide your email. Within seconds you should receive an email with your key.</p>
+<p>Now that we have our key, we can access any of the data sources in <code>rnoaa</code>. You can see the full list of data sets by going to <a href="https://docs.ropensci.org/rnoaa/index.html" target="_blank">rnoaa’s website</a>. For this blog post, I am going to access data from the Global Historical Climate Network (GHCN) dataset. This dataset includes daily land surface observations from weather stations around the world. Since I want snowfall data for the past 10 years, this is a great place to get it. The function in <code>rnoaa</code> that can do such a query is <code>meteo_pull_monitors</code>. This function takes a vector of one or more weather stations IDs from the GHCN dataset and joins them together in a single data frame. Before we can do this ,however, we need to figure out which stations we want data from. To do this let’s use the <code>ncdc_stations</code> function and put in the FIPS code for NJ (Middlesex County).</p>
+<pre><code>
+
+# If rnoaa isn&#39;t installed use the following first before trying to load it 
+# install.packages(&#39;rnoaa&#39;)
+
+library(rnoaa)
+
+key&lt;-&quot;GmjHeChrRWYy...&quot;
+
+stations &lt;- ncdc_stations(datasetid=&#39;GHCND&#39;, 
+              locationid=&#39;FIPS:34023&#39;,
+              token = key)
+
+stations$data  
+
+</code></pre>
+<pre><code>## Warning: package &#39;rnoaa&#39; was built under R version 3.5.2</code></pre>
+<pre><code>##   elevation    mindate    maxdate latitude
+## 1      31.4 2008-01-27 2008-09-07 40.52446
+## 2      32.6 2008-01-28 2019-12-28 40.44700
+## 3      29.0 2008-02-12 2017-05-16 40.30030
+## 4      36.6 2008-03-10 2010-07-28 40.33919
+## 5      67.1 2008-03-10 2019-04-08 40.40990
+## 6      15.8 2008-04-15 2008-10-06 40.48711
+##                                name datacoverage                id
+## 1        PERTH AMBOY 1.2 WNW, NJ US       0.7600 GHCND:US1NJMD0001
+## 2  NORTH BRUNSWICK TWP 1.5 W, NJ US       0.8482 GHCND:US1NJMD0002
+## 3       CRANBURY TWP 0.9 SSW, NJ US       0.4654 GHCND:US1NJMD0006
+## 4         MONROE TWP 1.6 NNW, NJ US       0.6613 GHCND:US1NJMD0007
+## 5 SOUTH BRUNSWICK TWP 3.1 NW, NJ US       0.9657 GHCND:US1NJMD0009
+## 6          SOUTH AMBOY 0.9 W, NJ US       0.9086 GHCND:US1NJMD0011
+##   elevationUnit longitude
+## 1        METERS -74.29210
+## 2        METERS -74.50800
+## 3        METERS -74.52860
+## 4        METERS -74.44610
+## 5        METERS -74.57300
+## 6        METERS -74.29501</code></pre>
+<p>This gives us the necessary information so we can start to pull the data. We can see what the minimum dates, maximum dates, latitude, station name, station ID, etc. so we can start getting an idea of what the data universe is for the stations around our area of interest. For my specific analysis, I want to find the stations with at least 10 years of data inside Middlesex County, NJ. From the looks of it, it seems as if the only ones are the following:</p>
+<pre><code>middlesex_stations&lt;-c(&quot;US1NJMD0062&quot;,&quot;US1NJMD0002&quot;,&quot;US1NJMD0063&quot;,&quot;US1NJMD0009&quot;,
+            &quot;US1NJMD0024&quot;,&quot;GHCND:US1NJMD0028&quot;)</code></pre>
+</div>
+<div id="pull-data-from-noaas-api-with-meteo_pull_monitors" class="section level2">
+<h2>Pull data from NOAA’s API with <code>meteo_pull_monitors</code></h2>
+<p>Now it’s time to use the <code>meteo_pull_monitors</code> function! This function (which is the main function to get the data) has a few arguments you can give it. A <strong>brief</strong> description of each one is below:</p>
+<ul>
+<li>monitors - A character vector listing the station IDs for all weather stations the user would like to pull</li>
+<li>keep_flags - TRUE/FALSE to keep any flags that each weather variable might have associated with the data</li>
+<li>date_min - A character string giving the earliest date the user would like in the final output formatted as “yyyy-mm-dd”</li>
+<li>date_max - A character string giving the latest date the user would like in the final output formatted as “yyyy-mm-dd”</li>
+<li>var - A character vector specifying the weather parameters to keep in the final data (ex: <code>&quot;SNOW&quot;</code>) A full list of the different possible weather variations can be found <a href="https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt" target="_blank">here</a></li>
+</ul>
+<pre><code>middlesex_snow&lt;-meteo_pull_monitors(monitors=middlesex_stations,var = &quot;SNOW&quot;)
+</code></pre>
+<p>Taking a look at the data frame we should see something like this:</p>
+<pre><code>## Warning in meteo_pull_monitors(monitors = middlesex_stations, var = &quot;SNOW&quot;): The following stations could not be pulled from the GHCN ftp:
+##  GHCND:US1NJMD0028 
+## Any other monitors were successfully pulled from GHCN.</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   id          date        snow
+##   &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt;
+## 1 US1NJMD0002 2008-01-01    NA
+## 2 US1NJMD0002 2008-01-02    NA
+## 3 US1NJMD0002 2008-01-03    NA
+## 4 US1NJMD0002 2008-01-04    NA
+## 5 US1NJMD0002 2008-01-05    NA
+## 6 US1NJMD0002 2008-01-06    NA</code></pre>
+<p>From my very <strong><em>basic</em></strong> understanding of the package, I believe the warning message above is because the station <code>GHCND:US1NJMD0028</code> doesn’t have the variable <code>&quot;SNOW&quot;</code>. So this now leads us with only three stations to look at it.</p>
+</div>
+<div id="filter-the-data-frame-with-dplyr" class="section level2">
+<h2>Filter the data frame with <code>dplyr</code></h2>
+<p>Next, I want to filter the data frame to only include data for the December months, get rid of any missing data, and convert mm to inches. I am going to do this with the <code>dplyr</code> package. The <code>dplyr</code> package is apart of the <code>tidyverse</code> and is a great resource for data manipulation. You can learn more about the <code>dplyr</code> package <a href="https://dplyr.tidyverse.org/" target="_blank">here</a></p>
+<pre><code>library(tidyverse)
+library(lubridate)
+library(measurements) # used to convert from mm to in
+
+middlesex_stations&lt;-middlesex_snow%&gt;%
+  dplyr::mutate(month = lubridate::month(date), snow = conv_unit(snow,&quot;mm&quot;,&quot;inch&quot;))%&gt;%
+  dplyr::filter(!snow == is.na(snow),month == 12)
+</code></pre>
+<p>After these filters, this leaves us with a data frame consisting of 39 obs. of 4 variables</p>
+</div>
+<div id="make-plot-with-ggplot2" class="section level2">
+<h2>Make plot with <code>ggplot2</code></h2>
+<p>One of the most popular data visualization in R is with <code>ggplot2</code>. I personally like <code>ggplot2</code> because of how easy it is to learn/use and how great it works with the rest of the <code>tidyverse</code>. To learn more about <code>ggplot2</code> head over to the <a href="https://ggplot2.tidyverse.org/" target="_blank">website</a>. With just two lines of code we can make a plot with the data frame we pulled from <code>rnoaa</code> above.</p>
+<pre><code>library(tidyverse)
+
+
+ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line()
+</code></pre>
+<p><img src="/post/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>As we can see from this plot, these three stations haven’t gotten a great deal of snow in December within the past 10 years. Granted, there are some gaps in the dataset and this probably isn’t the best dataset we could have used but it’s good enough for this blog post. One point of this plot that specifically stands out is the 22.9 in. snow total for US1NJMD0002 in 2010. This was a major storm that hit the east coast on December 27, 2010. The “Boxing Day Blizzard of 2010”, as they called it, was a rapidly developing nor’easter that completely tore through New Jersey. This is very noticeable in the plot, as a majority of the snowfall events didn’t even go over 5 in. Another thing to note after looking over the data frame is that there was no day in the past 10 years where there was snowfall on Christmas.</p>
+</div>
+<div id="customize-your-new-ggplot" class="section level2">
+<h2>Customize your new ggplot</h2>
+<p>Let’s take it a step further and customize the plot we just made. For fun, let’s try and find a picture of snow from the web and add it to the background. We can do this by using the <a href="https://cran.r-project.org/web/packages/ggimage/vignettes/ggimage.html"><code>ggimage</code></a> package. The <code>ggimage</code> package is a great package to use images in <code>ggplot2</code>.</p>
+<div id="add-background-image-from-web-to-plot" class="section level4">
+<h4>Add background image from web to plot</h4>
+<pre><code>library(ggimage)
+
+p&lt;-ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
+  geom_line()
+
+img&lt;-&quot;http://funny-photo.s3.amazonaws.com/preview/snow_effect/falling_snow_effect.jpeg&quot;
+ggbackground(p,img)
+</code></pre>
+<p><img src="/post/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>There’s a lot more customization you can do but that’s for another day. That’s the awesome thing about the <code>ggplot2</code> the options are endless for the amount of creativity you can pour into your plots. I hope you found this post helpful. If you have any questions, comments, or concerns please feel free to comment below. Thanks!</p>
+</div>
+</div>
