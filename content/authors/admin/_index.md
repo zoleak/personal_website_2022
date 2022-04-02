@@ -21,7 +21,7 @@ interests:
 
 organizations:
 - name: New Jersey Department of Environmental Protection
-  url: https://www.https://www.nj.gov/dep/.com
+  url: https://www.nj.gov/dep/airmon/
 role: Environmental Specialist
 social:
 - icon: envelope
@@ -31,10 +31,10 @@ social:
     header: true
 - icon: github
   icon_pack: fab
-  link: https://github.com/gcushen
+  link: https://github.com/zoleak
 - icon: linkedin
   icon_pack: fab
-  link: https://www.linkedin.com/
+  link: https://www.linkedin.com/in/kevinmichaelzolea/
 superuser: true
 title: Kevin Zolea
 ---

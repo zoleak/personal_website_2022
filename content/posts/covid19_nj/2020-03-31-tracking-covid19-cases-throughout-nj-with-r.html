@@ -23,18 +23,18 @@ header:
 <div id="read-in-the-data" class="section level1">
 <h1>Read in the data</h1>
 <p>To read in the data I will use the <code>readr</code> package.</p>
-<pre class="r"><code>library(readr) #loads package
-
-covid19_data&lt;-read_csv(&quot;us_counties.csv&quot;) #function that reads in csv files</code></pre>
+<pre class="r"><code>library(readr) #loads package</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>covid19_data&lt;-read_csv(&quot;us_counties.csv&quot;) #function that reads in csv files</code></pre>
 <p>Now that the data is read in.. lets check the structure of the data</p>
 <pre class="r"><code>str(covid19_data)</code></pre>
-<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 61971 obs. of  6 variables:
-##  $ date  : Date, format: &quot;2020-01-21&quot; &quot;2020-01-22&quot; ...
-##  $ county: chr  &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Cook&quot; ...
-##  $ state : chr  &quot;Washington&quot; &quot;Washington&quot; &quot;Washington&quot; &quot;Illinois&quot; ...
-##  $ fips  : chr  &quot;53061&quot; &quot;53061&quot; &quot;53061&quot; &quot;17031&quot; ...
-##  $ cases : num  1 1 1 1 1 1 1 1 1 1 ...
-##  $ deaths: num  0 0 0 0 0 0 0 0 0 0 ...
+<pre><code>## spec_tbl_df [61,971 × 6] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ date  : Date[1:61971], format: &quot;2020-01-21&quot; &quot;2020-01-22&quot; ...
+##  $ county: chr [1:61971] &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Cook&quot; ...
+##  $ state : chr [1:61971] &quot;Washington&quot; &quot;Washington&quot; &quot;Washington&quot; &quot;Illinois&quot; ...
+##  $ fips  : chr [1:61971] &quot;53061&quot; &quot;53061&quot; &quot;53061&quot; &quot;17031&quot; ...
+##  $ cases : num [1:61971] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ deaths: num [1:61971] 0 0 0 0 0 0 0 0 0 0 ...
 ##  - attr(*, &quot;spec&quot;)=
 ##   .. cols(
 ##   ..   date = col_date(format = &quot;&quot;),
@@ -43,19 +43,20 @@ covid19_data&lt;-read_csv(&quot;us_counties.csv&quot;) #function that reads in c
 ##   ..   fips = col_character(),
 ##   ..   cases = col_double(),
 ##   ..   deaths = col_double()
-##   .. )</code></pre>
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Everything seems to look correct. All the columns seem to have the right structure!</p>
 </div>
 <div id="filter-data" class="section level1">
 <h1>Filter data</h1>
-<p>Being that we only want to see how covid19 spread in NJ, we will filter the data frame to only show cases in NJ. This can be done with the <code>dplyr</code> package. The data also has a great deal of cases that are “Unknown”. By reading over the documentation of the data, it says many state health departments chose to report cases separately when the patient’s county of residence is unknown or pending determination. I will take this data out since we wouldn’t be able to link it to a specific county.</p>
+<p>Being that we only want to see how covid19 spread in NJ, we will filter the data frame to only show cases in NJ. This can be done with the <code>dplyr</code> package. The data also has a great deal of cases that are &quot;Unknown&quot;. By reading over the documentation of the data, it says many state health departments chose to report cases separately when the patient’s county of residence is unknown or pending determination. I will take this data out since we wouldn't be able to link it to a specific county.</p>
 <pre class="r"><code>library(dplyr) # used for data wrangling
 
 NJ_covid19&lt;-covid19_data%&gt;%
   dplyr::filter(state == &quot;New Jersey&quot;,county != &quot;Unknown&quot;) #filters data frame
 
 head(NJ_covid19) # Returns the first or last parts of the data frame </code></pre>
-<pre><code>## # A tibble: 6 x 6
+<pre><code>## # A tibble: 6 × 6
 ##   date       county state      fips  cases deaths
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;
 ## 1 2020-03-04 Bergen New Jersey 34003     1      0
@@ -67,7 +68,7 @@ head(NJ_covid19) # Returns the first or last parts of the data frame </code></pr
 </div>
 <div id="obtain-county-shapefile" class="section level1">
 <h1>Obtain county shapefile</h1>
-<p>Since the data frame doesn’t have any “shapes”, I have to download a shapefile with NJ’s counties to join to the NJ_covid19 data frame. Luckily, the New Jersey Office of GIS has a great website to download hundreds of spatial datasets across the state. By going to <a href="https://njogis-newjersey.opendata.arcgis.com" target="_blank">this website</a>, I can download the county shapefile.</p>
+<p>Since the data frame doesn't have any &quot;shapes&quot;, I have to download a shapefile with NJ's counties to join to the NJ_covid19 data frame. Luckily, the New Jersey Office of GIS has a great website to download hundreds of spatial datasets across the state. By going to <a href="https://njogis-newjersey.opendata.arcgis.com" target="_blank">this website</a>, I can download the county shapefile.</p>
 </div>
 <div id="read-in-county-shapefile" class="section level1">
 <h1>Read in county shapefile</h1>
@@ -75,16 +76,17 @@ head(NJ_covid19) # Returns the first or last parts of the data frame </code></pr
 <pre class="r"><code>library(sf)
 
 NJ_counties&lt;-st_read(getwd(),&quot;New_Jersey_Counties&quot;) #function to read in shapefile</code></pre>
-<pre><code>## Reading layer `New_Jersey_Counties&#39; from data source `/Users/kevinzolea/Desktop/Personal_Website/content/post/covid19_nj&#39; using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `New_Jersey_Counties&#39; from data source 
+##   `/Users/kevinzolea/personal_website_2022/content/posts/covid19_nj&#39; 
+##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 21 features and 22 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 193684.7 ymin: 34945.75 xmax: 657059.7 ymax: 919549.4
-## epsg (SRID):    3424
-## proj4string:    +proj=tmerc +lat_0=38.83333333333334 +lon_0=-74.5 +k=0.9999 +x_0=150000 +y_0=0 +datum=NAD83 +units=us-ft +no_defs</code></pre>
-<p>As you can see above, the shapefile got read into R. Now let’s plot it to make sure everythings okay.</p>
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 193684.7 ymin: 34945.75 xmax: 657059.7 ymax: 919549.4
+## Projected CRS: NAD83 / New Jersey (ftUS)</code></pre>
+<p>As you can see above, the shapefile got read into R. Now let's plot it to make sure everythings okay.</p>
 <pre class="r"><code>plot(st_geometry(NJ_counties)) </code></pre>
-<p><img src="/post/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/posts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="join-shapefile-to-data-frame" class="section level1">
 <h1>Join shapefile to data frame</h1>
@@ -99,19 +101,19 @@ NJ_covid19$county&lt;-tolower(NJ_covid19$county)#Makes all rows in the county co
   dplyr::select(date,county,state,cases,deaths,geometry)#selects only the columns of interest
 
 head(NJ_covid19_shapes)</code></pre>
-<pre><code>## # A tibble: 6 x 6
-##   date       county state   cases deaths                           geometry
-##   &lt;date&gt;     &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;MULTIPOLYGON [US_survey_foot]&gt;
-## 1 2020-03-04 bergen New Je…     1      0 (((656201 783614.4, 656141.1 7834…
-## 2 2020-03-05 bergen New Je…     2      0 (((656201 783614.4, 656141.1 7834…
-## 3 2020-03-06 bergen New Je…     3      0 (((656201 783614.4, 656141.1 7834…
-## 4 2020-03-06 camden New Je…     1      0 (((342764 423475.8, 342804.1 4234…
-## 5 2020-03-07 bergen New Je…     3      0 (((656201 783614.4, 656141.1 7834…
-## 6 2020-03-07 camden New Je…     1      0 (((342764 423475.8, 342804.1 4234…</code></pre>
+<pre><code>## # A tibble: 6 × 6
+##   date       county state      cases deaths                             geometry
+##   &lt;date&gt;     &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;MULTIPOLYGON [US_survey_foot]&gt;
+## 1 2020-03-04 bergen New Jersey     1      0 (((656201 783614.4, 656141.1 783413…
+## 2 2020-03-05 bergen New Jersey     2      0 (((656201 783614.4, 656141.1 783413…
+## 3 2020-03-06 bergen New Jersey     3      0 (((656201 783614.4, 656141.1 783413…
+## 4 2020-03-06 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…
+## 5 2020-03-07 bergen New Jersey     3      0 (((656201 783614.4, 656141.1 783413…
+## 6 2020-03-07 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…</code></pre>
 </div>
 <div id="make-map-with-ggplot2-and-gganimate" class="section level1">
 <h1>Make map with ggplot2 and gganimate</h1>
-<p>All the data manipulation part is done, now I can start building the actual map. I will be using the <code>ggplot2</code> package in conjuction with the <code>gganimate</code> package to create the final animated time series map showing how covid19 spread throughout NJ’s counties.</p>
+<p>All the data manipulation part is done, now I can start building the actual map. I will be using the <code>ggplot2</code> package in conjuction with the <code>gganimate</code> package to create the final animated time series map showing how covid19 spread throughout NJ's counties.</p>
 <pre class="r"><code>library(ggplot2) #Used for plotting
 library(gganimate) #Used for animations
 library(RColorBrewer) #Used for color scale 
@@ -150,7 +152,7 @@ covid_map&lt;-ggplot()+
   transition_manual(date)
 
   animate(covid_map, nframe=27,fps = 2, end_pause = 15,height = 500, width =500)</code></pre>
-<p><img src="/post/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-8-1.gif" /><!-- --></p>
+<p><img src="/posts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-8-1.gif" /><!-- --></p>
 </div>
 <div id="things-to-note-about-above-code" class="section level1">
 <h1>Things to note about above code</h1>
