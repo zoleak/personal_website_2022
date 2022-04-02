@@ -12,10 +12,7 @@ tags:
 title: Analyzing the Diurnal Cycle of Precipitation in the NCEP Global Forecast System
 url_code: ""
 url_custom: 
-#- icon: twitter
- # icon_pack: fab
- # name: Follow
- # url: https://twitter.com/georgecushen
+
 url_pdf: "pdf/NCEP_Poster.pdf"
 url_slides: ""
 url_video: ""

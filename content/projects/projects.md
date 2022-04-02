@@ -26,20 +26,20 @@ subtitle = ""
     tag = "*"
     
   [[content.filter_button]]
-    name = "Software"
-    tag = "software"
+    name = "Shiny Apps"
+    tag = "Shiny"
   
   [[content.filter_button]]
-    name = "Courses"
-    tag = "Course"
+    name = ""
+    tag = ""
     
   [[content.filter_button]]
-    name = "Books"
-    tag = "Book"
+    name = ""
+    tag = ""
 
   [[content.filter_button]]
-    name = "Other"
-    tag = "Other"
+    name = ""
+    tag = ""
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
