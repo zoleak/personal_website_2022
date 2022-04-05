@@ -1,0 +1,25 @@
+---
+title: Exploratory Data Analysis of Fortune 1000 Companies
+author: Kevin Zolea
+date: '2022-04-05'
+slug: exploratory-data-analysis-of-fortune-1000-companies
+categories:
+  - Python
+tags:
+  - Python
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-04-05T11:14:04-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true 
+---
+My girlfriend recently just got a new job at a Fortune 1000 company and it let me to ask many different questions. What percent of woman are ceos? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
+
+### What does Exploratory Data Analysis Even Mean?
+Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
