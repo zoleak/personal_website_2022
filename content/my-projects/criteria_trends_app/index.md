@@ -1,6 +1,6 @@
 ---
 date: "2019-02-11T00:00:00-04:00"
-external_link: ""
+external_link: "https://airtrend.herokuapp.com/"
 image:
   #caption: Photo by Toa Heftiba on Unsplash
   focal_point: Smart
