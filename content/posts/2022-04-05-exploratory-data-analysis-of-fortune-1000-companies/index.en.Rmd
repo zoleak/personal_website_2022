@@ -19,7 +19,18 @@ image:
 projects: []
 draft: true 
 ---
-My girlfriend recently just got a new job at a Fortune 1000 company and it let me to ask many different questions. What percent of woman are ceos? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
+My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are ceos? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
 
-### What does Exploratory Data Analysis Even Mean?
-Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
+I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021) that had exactly what I was looking for. The author of this dataset pulled the data by scraping the [fortune website](https://fortune.com/). He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook). I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.
+
+Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analyis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
+
+
+
+
+
+
+
+
+
+

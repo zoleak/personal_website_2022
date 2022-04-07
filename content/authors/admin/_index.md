@@ -18,6 +18,7 @@ interests:
 - Geoscience
 - R/Python
 - Data Analytics
+- GIS
 
 organizations:
 - name: New Jersey Department of Environmental Protection
