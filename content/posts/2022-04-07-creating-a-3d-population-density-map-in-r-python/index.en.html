@@ -1,0 +1,132 @@
+---
+title: Creating a 3D Population Density Map in R/Python
+author: Kevin Zolea
+date: '2022-04-07'
+slug: creating-a-3d-population-density-map-in-r-python
+categories:
+  - R
+  - Python
+tags:
+  - R
+  - Python
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-04-07T10:51:00-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>I recently came across an awesome plot created in R using the <a href="https://www.rayshader.com/index.html" target="_blank">rayshader package</a> and was completely amazed. The rayshader package allows you to produce 3D data visualizations in R. You can also translate <a href="https://ggplot2.tidyverse.org/" target="_blank">ggplot2</a> objects into 3D data visualizations. After reading over the package documentation, I gained some motivation to try the package out myself and make a 3D population density map. The 3D map that will be created will be a population density map of the US.</p>
+<div id="find-dataset" class="section level4">
+<h4>Find Dataset</h4>
+<p>A quick google search of population density of the US brought me to this <a href="https://www.census.gov/data/tables/time-series/dec/density-data-text.html" target="_blank">census bureau page</a></p>
+<p><img src="capture.PNG" /></p>
+</div>
+<div id="read-dataset-into-r-and-view-structure" class="section level4">
+<h4>Read dataset into R and view structure</h4>
+<p>Now it’s time to read the dataset into R and get an understanding of the dataset.</p>
+<pre class="r"><code>library(readxl) # package that allows you to read excel spreadsheets into R
+
+pop_density_df&lt;-read_xlsx(&quot;population-density-data-table.xlsx&quot;)
+
+str(pop_density_df)</code></pre>
+<pre><code>## tibble [56 x 40] (S3: tbl_df/tbl/data.frame)
+##  $ Area...1   : chr [1:56] NA &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; ...
+##  $ 2020 Census: chr [1:56] &quot;Resident Population 2020 Census&quot; &quot;5024279&quot; &quot;733391&quot; &quot;7151502&quot; ...
+##  $ ...3       : chr [1:56] &quot;Population Density 2020 Census&quot; &quot;99.2&quot; &quot;1.3&quot; &quot;62.9&quot; ...
+##  $ ...4       : chr [1:56] &quot;Density Rank 2020 Census&quot; &quot;29&quot; &quot;52&quot; &quot;35&quot; ...
+##  $ 2010 Census: chr [1:56] &quot;Resident Population 2010 Census&quot; &quot;4779736&quot; &quot;710231&quot; &quot;6392017&quot; ...
+##  $ ...6       : chr [1:56] &quot;Population Density 2010 Census&quot; &quot;94.4&quot; &quot;1.2&quot; &quot;56.3&quot; ...
+##  $ ...7       : chr [1:56] &quot;Density Rank 2010 Census&quot; &quot;29&quot; &quot;52&quot; &quot;35&quot; ...
+##  $ 2000 Census: chr [1:56] &quot;Resident Population 2000 Census&quot; &quot;4447100&quot; &quot;626932&quot; &quot;5130632&quot; ...
+##  $ ...9       : chr [1:56] &quot;Population Density 2000 Census&quot; &quot;87.8&quot; &quot;1.1000000000000001&quot; &quot;45.2&quot; ...
+##  $ ...10      : chr [1:56] &quot;Density Rank 2000 Census&quot; &quot;28&quot; &quot;52&quot; &quot;38&quot; ...
+##  $ Area...11  : chr [1:56] NA &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; ...
+##  $ 1990 Census: chr [1:56] &quot;Resident Population 1990 Census&quot; &quot;4040587&quot; &quot;550043&quot; &quot;3665228&quot; ...
+##  $ ...13      : chr [1:56] &quot;Population Density 1990 Census&quot; &quot;79.8&quot; &quot;1&quot; &quot;32.299999999999997&quot; ...
+##  $ ...14      : chr [1:56] &quot;Density Rank 1990 Census&quot; &quot;27&quot; &quot;52&quot; &quot;39&quot; ...
+##  $ 1980 Census: chr [1:56] &quot;Resident Population 1980 Census&quot; &quot;3893888&quot; &quot;401851&quot; &quot;2718215&quot; ...
+##  $ ...16      : chr [1:56] &quot;Population Density 1980 Census&quot; &quot;76.900000000000006&quot; &quot;0.7&quot; &quot;23.9&quot; ...
+##  $ ...17      : chr [1:56] &quot;Density Rank 1980 Census&quot; &quot;28&quot; &quot;52&quot; &quot;42&quot; ...
+##  $ 1970 Census: chr [1:56] &quot;Resident Population 1970 Census&quot; &quot;3444165&quot; &quot;300382&quot; &quot;1770900&quot; ...
+##  $ ...19      : chr [1:56] &quot;Population Density 1970 Census&quot; &quot;68&quot; &quot;0.5&quot; &quot;15.6&quot; ...
+##  $ ...20      : chr [1:56] &quot;Density Rank 1970 Census&quot; &quot;28&quot; &quot;52&quot; &quot;43&quot; ...
+##  $ Area...21  : chr [1:56] NA &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; ...
+##  $ 1960 Census: chr [1:56] &quot;Resident Population 1960 Census&quot; &quot;3266740&quot; &quot;226167&quot; &quot;1302161&quot; ...
+##  $ ...23      : chr [1:56] &quot;Population Density 1960 Census&quot; &quot;64.5&quot; &quot;0.4&quot; &quot;11.5&quot; ...
+##  $ ...24      : chr [1:56] &quot;Density Rank 1960 Census&quot; &quot;28&quot; &quot;52&quot; &quot;43&quot; ...
+##  $ 1950 Census: chr [1:56] &quot;Resident Population 1950 Census&quot; &quot;3061743&quot; &quot;128643&quot; &quot;749587&quot; ...
+##  $ ...26      : chr [1:56] &quot;Population Density 1950 Census&quot; &quot;60.5&quot; &quot;0.2&quot; &quot;6.6&quot; ...
+##  $ ...27      : chr [1:56] &quot;Density Rank 1950 Census&quot; &quot;24&quot; &quot;52&quot; &quot;47&quot; ...
+##  $ 1940 Census: chr [1:56] &quot;Resident Population 1940 Census&quot; &quot;2832961&quot; &quot;72524&quot; &quot;499261&quot; ...
+##  $ ...29      : chr [1:56] &quot;Population Density 1940 Census&quot; &quot;55.9&quot; &quot;0.1&quot; &quot;4.4000000000000004&quot; ...
+##  $ ...30      : chr [1:56] &quot;Density Rank 1940 Census&quot; &quot;23&quot; &quot;52&quot; &quot;47&quot; ...
+##  $ Area...31  : chr [1:56] NA &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; ...
+##  $ 1930 Census: chr [1:56] &quot;Resident Population 1930 Census&quot; &quot;2646248&quot; &quot;59278&quot; &quot;435573&quot; ...
+##  $ ...33      : chr [1:56] &quot;Population Density 1930 Census&quot; &quot;52.3&quot; &quot;0.1&quot; &quot;3.8&quot; ...
+##  $ ...34      : chr [1:56] &quot;Density Rank 1930 Census&quot; &quot;24&quot; &quot;52&quot; &quot;47&quot; ...
+##  $ 1920 Census: chr [1:56] &quot;Resident Population 1920 Census&quot; &quot;2348174&quot; &quot;55036&quot; &quot;334162&quot; ...
+##  $ ...36      : chr [1:56] &quot;Population Density 1920 Census&quot; &quot;46.4&quot; &quot;0.1&quot; &quot;2.9&quot; ...
+##  $ ...37      : chr [1:56] &quot;Density Rank 1920 Census&quot; &quot;25&quot; &quot;52&quot; &quot;49&quot; ...
+##  $ 1910 Census: chr [1:56] &quot;Resident Population 1910 Census&quot; &quot;2138093&quot; &quot;64356&quot; &quot;204354&quot; ...
+##  $ ...39      : chr [1:56] &quot;Population Density 1910 Census&quot; &quot;42.2&quot; &quot;0.1&quot; &quot;1.8&quot; ...
+##  $ ...40      : chr [1:56] &quot;Density Rank 1910 Census&quot; &quot;25&quot; &quot;52&quot; &quot;49&quot; ...</code></pre>
+<pre class="r"><code>head(pop_density_df,20)</code></pre>
+<pre><code>## # A tibble: 20 x 40
+##    Area...1  `2020 Census`  ...3   ...4  `2010 Census` ...6  ...7  `2000 Census`
+##    &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;        
+##  1 &lt;NA&gt;      Resident Popu~ Popul~ Dens~ Resident Pop~ Popu~ Dens~ Resident Pop~
+##  2 Alabama   5024279        99.2   29    4779736       94.4  29    4447100      
+##  3 Alaska    733391         1.3    52    710231        1.2   52    626932       
+##  4 Arizona   7151502        62.9   35    6392017       56.3  35    5130632      
+##  5 Arkansas  3011524        57.9   36    2915918       56    36    2673400      
+##  6 Californ~ 39538223       253.7  13    37253956      239.1 13    33871648     
+##  7 Colorado  5773714        55.7   39    5029196       48.5  39    4301261      
+##  8 Connecti~ 3605944        744.7  6     3574097       738.1 6     3405565      
+##  9 Delaware  989948         508    8     897934        460.8 8     783600       
+## 10 District~ 689545         11280  1     601723        9856~ 1     572059       
+## 11 Florida   21538187       401.4  10    18801310      350.6 10    15982378     
+## 12 Georgia   10711908       185.6  19    9687653       168.4 20    8186453      
+## 13 Hawaii    1455271        226.6  15    1360301       211.8 15    1211537      
+## 14 Idaho     1839106        22.3   46    1567582       19    46    1293953      
+## 15 Illinois  12812508       230.8  14    12830632      231.1 14    12419293     
+## 16 Indiana   6785528        189.4  18    6483802       181   18    6080485      
+## 17 Iowa      3190369        57.1   38    3046355       54.5  38    2926324      
+## 18 Kansas    2937880        35.9   43    2853118       34.9  42    2688418      
+## 19 Kentucky  4505836        114.1  25    4339367       109.9 24    4041769      
+## 20 Louisiana 4657757        107.8  28    4533372       104.9 26    4468976      
+## # ... with 32 more variables: ...9 &lt;chr&gt;, ...10 &lt;chr&gt;, Area...11 &lt;chr&gt;,
+## #   1990 Census &lt;chr&gt;, ...13 &lt;chr&gt;, ...14 &lt;chr&gt;, 1980 Census &lt;chr&gt;,
+## #   ...16 &lt;chr&gt;, ...17 &lt;chr&gt;, 1970 Census &lt;chr&gt;, ...19 &lt;chr&gt;, ...20 &lt;chr&gt;,
+## #   Area...21 &lt;chr&gt;, 1960 Census &lt;chr&gt;, ...23 &lt;chr&gt;, ...24 &lt;chr&gt;,
+## #   1950 Census &lt;chr&gt;, ...26 &lt;chr&gt;, ...27 &lt;chr&gt;, 1940 Census &lt;chr&gt;,
+## #   ...29 &lt;chr&gt;, ...30 &lt;chr&gt;, Area...31 &lt;chr&gt;, 1930 Census &lt;chr&gt;, ...33 &lt;chr&gt;,
+## #   ...34 &lt;chr&gt;, 1920 Census &lt;chr&gt;, ...36 &lt;chr&gt;, ...37 &lt;chr&gt;, ...</code></pre>
+</div>
+<div id="clean-dataset" class="section level4">
+<h4>Clean dataset</h4>
+<p>Looking over the dataset you can tell that it needs to be cleaned up a bit. For the first map I just want to plot the 2020 population density for the entire US.</p>
+<pre class="r"><code>library(tidyverse)
+pop_df_2020&lt;-rename(pop_density_df,pop_2020 = ...3,# rename column name ...3 to pop_2020
+                    state_name = Area...1)%&gt;%
+  select(state_name,pop_2020)%&gt;%
+  filter(!pop_2020 ==&#39;Population Density 2020 Census&#39;)</code></pre>
+</div>
+<div id="get-shapefile-with-us-state-boundaries-and-merge-with-us-census-data" class="section level4">
+<h4>Get shapefile with US state boundaries and merge with US Census Data</h4>
+<p>Now that the data is cleaned up, it’s time to get the state boundary shapefile. This can be done by installing and loading the <a href="https://urbaninstitute.github.io/urbnmapr/" target="_blank">urbnmapr package</a>.</p>
+<pre class="r"><code>devtools::install_github(&quot;UrbanInstitute/urbnmapr&quot;)
+library(urbnmapr)
+library(tidyverse)
+
+spatial_data_merg &lt;- left_join(pop_df_2020,
+                          get_urbn_map(map = &quot;states&quot;, sf = TRUE),
+                          by = &quot;state_name&quot;)</code></pre>
+</div>
