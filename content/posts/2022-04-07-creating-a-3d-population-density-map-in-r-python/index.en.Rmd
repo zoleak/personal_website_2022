@@ -53,7 +53,8 @@ library(tidyverse)
 pop_df_2020<-rename(pop_density_df,pop_2020 = ...3,# rename column name ...3 to pop_2020
                     state_name = Area...1)%>%
   select(state_name,pop_2020)%>%
-  filter(!pop_2020 =='Population Density 2020 Census')%>%
+  filter(!pop_2020 =='Population Density 2020 Census',
+         !state_name == 'United States1')%>%
   mutate(pop_2020 = as.numeric(as.character(pop_2020)))
 
 ```
@@ -81,13 +82,14 @@ library(viridis)
 
 spatial_data_merg<-st_as_sf(spatial_data_merg)
 
+
 plot_2d<-ggplot()+
     geom_sf(data = spatial_data_merg,aes(fill=pop_2020))+
-  labs(fill = "Population Density")+
-  scale_fill_viridis()+
+  scale_fill_viridis(guide= "none")+
+  ggtitle("Population Density (2020)")+
   theme_classic()
 
-    
+ plot_2d   
 
 
 ```
@@ -97,8 +99,8 @@ plot_2d<-ggplot()+
 
 ```{r message=FALSE}
 library(rayshader)
+plot_gg(plot_2d,multicore = T,zoom = .50)
 
-plot_gg(plot_2d)
 
 ```
 

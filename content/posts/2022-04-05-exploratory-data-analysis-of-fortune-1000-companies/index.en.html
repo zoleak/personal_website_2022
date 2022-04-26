@@ -23,5 +23,82 @@ draft: true
 
 
 <p>My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are ceos? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.</p>
-<p>I stumbled across a great <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021">dataset</a> that had exactly what I was looking for. The author of this dataset pulled the data by scraping the <a href="https://fortune.com/">fortune website</a>. He goes into great detail on how he accomplished this in this <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook">blog post</a>. I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.</p>
-<p>Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analyis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.</p>
+<p>I stumbled across a great <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021" target="_blank">dataset</a> that had exactly what I was looking for. The author of this dataset pulled the data by scraping the <a href="https://fortune.com/" target="_blank">fortune website</a>. He goes into great detail on how he accomplished this in this <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook" target="_blank">blog post</a>. I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.</p>
+<p>Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analysis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.</p>
+<div id="import-modules-used-for-analysis" class="section level4">
+<h4>Import modules used for analysis</h4>
+<pre class="python"><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import squarify # makes tree map
+import seaborn as sns</code></pre>
+</div>
+<div id="read-in-data-and-perform-eda" class="section level4">
+<h4>Read in data and perform EDA</h4>
+<pre class="python"><code>df = pd.read_csv(&quot;Fortune_1000.csv&quot;)
+
+# Find out percent of woman CEOs
+wf= df[&#39;ceo_woman&#39;].value_counts(normalize=True).to_frame()
+# Make pie chart of woman vs. men ceos
+labels = &quot;Male&quot;,&quot;Female&quot;
+plt.title(&quot;Percentage of Male Vs. Female CEOs&quot;)
+plt.pie(wf[&quot;ceo_woman&quot;],labels = labels, autopct = &#39;%.1f%%&#39;,
+        wedgeprops = {&quot;edgecolor&quot; : &quot;black&quot;,
+                      &#39;linewidth&#39;: 1,
+                      &#39;antialiased&#39;: True})
+###############################################################################
+# Which states have the most fortune 1000 companies</code></pre>
+<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x0000000052E033D0&gt;, &lt;matplotlib.patches.Wedge object at 0x0000000052E03700&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
+<pre class="python"><code>state_count = df[&#39;state&#39;].value_counts().rename_axis(&#39;state&#39;).reset_index(name = &#39;counts&#39;)
+# Get top 10 states with the most companies
+state_count = state_count.nlargest(20,&#39;counts&#39;)
+# Make tree map to show states with most fortune 1000 companies
+sizes = state_count[&#39;counts&#39;]
+labels =  [f&#39;{state}\n{count}&#39; for state, count in zip(state_count.state, state_count.counts)]
+squarify.plot(sizes = sizes, label = labels, pad=True,
+              color = &#39;mediumblue&#39;,text_kwargs={&#39;color&#39;:&#39;white&#39;})
+plt.axis(&#39;off&#39;)</code></pre>
+<pre><code>## (0.0, 100.0, 0.0, 100.0)</code></pre>
+<pre class="python"><code>plt.title(&#39;Top 10 States with the most headquarters&#39;)
+plt.show() 
+###############################################################################
+#Which sectors have the most fortune 1000 companies</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="python"><code>sector_count =  df[&#39;sector&#39;].value_counts().rename_axis(&#39;sector&#39;).reset_index(name = &#39;counts&#39;)
+
+###############################################################################
+# Is there a relationship between # of employees and revenue?
+sns.lmplot(x=&quot;revenue&quot;,y=&quot;num. of employees&quot;,
+           data=df)
+###############################################################################
+# Profit vs. revenue in bar plot</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-2.png" width="245" /></p>
+<pre class="python"><code>rev_prof = df.nlargest(5,&#39;revenue&#39;)
+rev_prof = pd.melt(rev_prof,id_vars = [&#39;company&#39;],value_vars = [&#39;revenue&#39;,&#39;profit&#39;])
+sns.set_theme(style=&quot;whitegrid&quot;)
+sns.set_color_codes(&quot;pastel&quot;)
+p1 =sns.barplot(x=&quot;value&quot;, y=&quot;company&quot;,hue = &quot;variable&quot;,data= rev_prof)
+p1.set_title(&quot;Profit Vs. Revenue for Top 5 Fortune 1000 Companies&quot;)
+p1.set(xlabel=&#39;Millions ($)&#39;, ylabel=&quot;&quot;)
+
+# Make table to put next to plot to show percent change in rev to prof
+df2 = df.nlargest(5,&#39;revenue&#39;)
+#define custom function
+def find_change(df2):
+    change = (df2[&#39;profit&#39;]/df2[&#39;revenue&#39;])*100
+    return(change)
+df3 = df2.groupby(&#39;company&#39;).apply(find_change).reset_index()
+df3=df3.round()
+#per_change = rev_prof.groupby(&#39;company&#39;,&#39;variable&#39;,&#39;value&#39;).assign(percent_change = (&#39;&#39;))
+# Put barplot and table together in same plot
+
+plt.subplots_adjust(left=0.2, bottom=0.4)
+
+the_table = plt.table(cellText=df3.values,
+          cellLoc = &#39;center&#39;, rowLoc = &#39;center&#39;,
+          transform=plt.gcf().transFigure,
+          bbox = ([0.3, 0.1, 0.5, 0.2]))
+the_table.auto_set_font_size(False)
+the_table.set_fontsize(6)
+</code></pre>
+</div>
