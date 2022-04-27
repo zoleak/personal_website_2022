@@ -19,7 +19,7 @@ image:
 projects: []
 draft: true 
 ---
-My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are ceos? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
+My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are CEOs? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
 
 I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The author of this dataset pulled the data by scraping the [fortune website](https://fortune.com/){target="_blank"}. He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}. I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.
 
@@ -38,9 +38,19 @@ import seaborn as sns
 
 #### Read in data and perform EDA
 
-```{python}
-df = pd.read_csv("Fortune_1000.csv")
+ The ```pandas``` package can be used to read in cvs files. After the data is read into python, it's always best to view the structure of your data and view the first few rows.
 
+```{python, echo=F, warning=F, message=F, results = 'hide'}
+df = pd.read_csv("Fortune_1000.csv") # Read csv file into python
+
+df.dtypes # see structure of data
+df.head(n=10)
+```
+
+
+My first question to answer is how many woman are CEOs. I was quickly able to see this by making a pie chart. As you can see from the chart, there are only 6.8% woman CEOs. 
+
+```{python, echo=F, warning=F, message=F, results = 'hide'}
 # Find out percent of woman CEOs
 wf= df['ceo_woman'].value_counts(normalize=True).to_frame()
 # Make pie chart of woman vs. men ceos
@@ -50,7 +60,15 @@ plt.pie(wf["ceo_woman"],labels = labels, autopct = '%.1f%%',
         wedgeprops = {"edgecolor" : "black",
                       'linewidth': 1,
                       'antialiased': True})
-###############################################################################
+                      
+plt.show()
+                      
+```                      
+
+Next, lets see which states have the most companies. I will use a treemap to show this. Although this probably isn't the best chart to show this I thought it seemed pretty cool. California came out on top with 121.
+
+```{python, echo=F, warning=F, message=F, results = 'hide'}
+
 # Which states have the most fortune 1000 companies
 state_count = df['state'].value_counts().rename_axis('state').reset_index(name = 'counts')
 # Get top 10 states with the most companies
@@ -63,15 +81,23 @@ squarify.plot(sizes = sizes, label = labels, pad=True,
 plt.axis('off')
 plt.title('Top 10 States with the most headquarters')
 plt.show() 
-###############################################################################
+```
+
+
+```{python}
 #Which sectors have the most fortune 1000 companies
 sector_count =  df['sector'].value_counts().rename_axis('sector').reset_index(name = 'counts')
+```
 
-###############################################################################
+```{python}
 # Is there a relationship between # of employees and revenue?
 sns.lmplot(x="revenue",y="num. of employees",
            data=df)
-###############################################################################
+
+plt.show()
+```           
+           
+```{python, echo=F, warning=F, message=F, results = 'hide'}
 # Profit vs. revenue in bar plot
 rev_prof = df.nlargest(5,'revenue')
 rev_prof = pd.melt(rev_prof,id_vars = ['company'],value_vars = ['revenue','profit'])
@@ -101,7 +127,7 @@ the_table = plt.table(cellText=df3.values,
 the_table.auto_set_font_size(False)
 the_table.set_fontsize(6)
 
-
+plt.show()
 ```
 
 
