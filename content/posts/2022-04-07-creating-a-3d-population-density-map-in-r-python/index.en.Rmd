@@ -83,11 +83,27 @@ library(viridis)
 spatial_data_merg<-st_as_sf(spatial_data_merg)
 
 
-plot_2d<-ggplot()+
-    geom_sf(data = spatial_data_merg,aes(fill=pop_2020))+
-  scale_fill_viridis(guide= "none")+
+plot_2d<-spatial_data_merg%>%
+  ggplot(aes(fill=pop_2020))+
+    geom_sf(color = NA)+
+scale_fill_viridis_c(option = "plasma", trans = "sqrt")+
   ggtitle("Population Density (2020)")+
-  theme_classic()
+  theme(
+    axis.line = element_line(colour = "transparent"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.text = element_text(color = "transparent"),
+    legend.title = element_text(color = "transparent"),
+    legend.position = "blank",
+    plot.title = element_text(hjust = 0.5)
+  )
 
  plot_2d   
 
@@ -99,13 +115,32 @@ plot_2d<-ggplot()+
 
 ```{r message=FALSE}
 library(rayshader)
-plot_gg(plot_2d,multicore = T,zoom = .50)
+plot_gg(plot_2d,width = 6, height = 6,
+  scale = 300,
+  multicore = FALSE,
+  fov = 10, theta = 320, phi = 25,
+  zoom = 0.40,
+  offset_edges = FALSE,
+  windowsize = c(2000, 2000))
+
+render_snapshot("test.png")
 
 
 ```
 
 
+### Creating the same map in Python
 
+#### Install pydeck
+
+You can learn more about pydeck [here](https://pypi.org/project/pydeck/){tarket = "blank"}
+
+```{python}
+py_install("pydeck",pip = TRUE)
+#pip install pydeck
+
+
+```
 
 
 
