@@ -5,7 +5,7 @@ theme: "starter-hugo-academic"
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
 
 title: Kevin Zolea # Website name
-baseurl: 'https://testwang.netlify.app/' # Website URL
+baseurl: 'www.kevinzolea.com' # Website URL
 copyright: '© Kevin Zolea (2022)' # Footer text, e.g. '© {year} Me'
 
 ############################
