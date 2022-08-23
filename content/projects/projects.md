@@ -29,17 +29,7 @@ subtitle = ""
     name = "Shiny Apps"
     tag = "Shiny"
   
-  [[content.filter_button]]
-    name = ""
-    tag = ""
-    
-  [[content.filter_button]]
-    name = ""
-    tag = ""
 
-  [[content.filter_button]]
-    name = ""
-    tag = ""
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.

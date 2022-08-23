@@ -5,7 +5,6 @@ image:
   #caption: Photo by Toa Heftiba on Unsplash
   focal_point: Smart
 summary: Shiny app that allows users to input data and calculate how their real estate investment will perform.
-[]()
 tags:
 - Shiny
 title: Real Estate Investing Calculator
