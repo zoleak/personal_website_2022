@@ -1,6 +1,6 @@
 ---
 date: "2019-02-11T00:00:00-04:00"
-external_link: "https://airtrend.herokuapp.com/"
+external_link: "https://kzolea695.shinyapps.io/criteriatrends/"
 image:
   #caption: Photo by Toa Heftiba on Unsplash
   focal_point: Smart
