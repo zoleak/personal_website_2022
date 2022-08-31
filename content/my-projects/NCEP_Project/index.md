@@ -23,3 +23,7 @@ Forecasting the diurnal cycle of precipitation over the continental United State
 
 This study is expected to provide feedback to the model developers at NCEP’s Environmental Modeling Center (EMC) to inform (for making further) priorities for improvements to the GFS model, especially with the newly selected Next Generation Global Prediction System (NGGPS) Finite Volume Cube Sphere (FV3) modeling system. The NGGPS is a fully coupled system that will be designed to create useful forecast guidance out to 30 days, extend forecast skill beyond 8 to 10 days, and improve hurricane track/intensity forecast.
 
+
+![](NCEP_Poster.png)
+
+
