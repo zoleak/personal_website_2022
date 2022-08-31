@@ -24,7 +24,7 @@ Being that I work for the [Division of Water Monitoring & Standards](https://www
 ### What is the ```dataRetrieval``` package & how does it work?
 The ```dataRetrieval``` package is a collection of functions to help retrieve U.S. Geological Survey ([USGS](https://www.usgs.gov){target="_blank"}) and U.S. Environmental Protection Agency ([EPA](https://www.epa.gov){target="_blank"}) water quality and hydrology data from web services. With the dataRetrieval package you can discover, access, retrieve, and parse water data. The data comes from numerous different sources. The image below provides a nice overview of the different sources, data types, metadata, time series type, formats, and output.
 
-![Image Credit: USGS](/img/data_source_example.png)
+![Image Credit: USGS](data_source_example.png)
 
 I'm not going to go into all the different functions and usage of the ```dataRetrieval``` package but if you would like to learn more here are some of the sources I found the most useful:
 

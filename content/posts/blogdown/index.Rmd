@@ -45,14 +45,12 @@ Pick the theme you want to use and look at the line that says ```Minimum Hugo Ve
 
 1. I am going to assume you have used [GitHub](https://github.com/){target="_blank"} before, but if you haven't, that is completely fine. You can check out this [site](https://guides.github.com/){target="_blank"} to get a better understanding. Once you have a good understanding of GitHub and have an account created, you need to create a new repository. You can name this repository anything you want but it's usually best practice to give it a meaningful name.
 
-![](/img/screenshot1.png)
-
+![](screenshot1.png)
 Once you click create repository you should be on your repository page.
 
 2. Now you have to create a local copy of your repository or in other words "clone it". To do this click the green "Clone or Download" button on the right hand side and copy the url displayed.
 
-![](/img/screenshot2.png)
-
+![](screenshot2.png)
 3. So in order to "clone" the repo with the url that you just copied, you're going to have to use git. If you don't know anything about git, I recommend reading [Happy Git and GitHub for the useR ](https://happygitwithr.com/){target="_blank"}. Now you can do this in numerous different ways. You can open [Terminal](https://macpaw.com/how-to/use-terminal-on-mac) if you're on a Mac, if you're on windows you can open [Git Bash](https://gitforwindows.org/){target="_blank"} or you can use the Terminal in Rstudio. Personally, I like to use Rstudio. So if you're in Rstudio you have to make sure that you navigate to your working directory. You can see your working directory by typing `pwd` and to change directories use `cd`. Type `git clone` and then paste the URL that you copied before.
 
 The command should look like this:
@@ -60,11 +58,7 @@ The command should look like this:
 `git clone https://github.com/zoleak/Personal_Website.git` 
 
 If all went well then you should see a folder with the files in your repo in the directory that you chose.
-
-![](/img/folder_stuff.png)
-
-
-
+![](folder_stuff.png)
 ### Getting started with the blogdown package in Rstudio
 
 The time has finally come to start creating the site.
@@ -97,8 +91,7 @@ I am not going to go over this because I am still learning how to do this myself
 
 
 ### Deploy in Netlify
-
-![](/img/netlify.png)
+![](netlify.png)
 There are a number of ways to deploy your new website but I personally like Netlify. Netlify allows you to connect to your GitHub repo, add custom build settings, and deploy your website. The best part about Netlify is that it's **free** and extremely **easy**.
 
 1. When you are ready to deploy, commit your changes and push to GitHub, then go online to [Netlify](https://www.netlify.com/){target="_blank"}. You can commit your changes and push to GitHub all in Rstudio. Use the top menu button.
@@ -106,8 +99,7 @@ There are a number of ways to deploy your new website but I personally like Netl
 `Tools->Version Control->Commit`
 
 This will bring up a new window:
-
-![](/img/version_control.png)
+![](version_control.png)
 You should see all your files there. Highlight all the files you want to commit and make sure they are set to staged. Add a commit message and then press commit. After you press commit a smaller window will pop up. Wait a couple seconds and let it do it's thing. Once it's done hit close. Lastly, click the push button. If you did this correctly the files will now be uploaded to your GitHub repo.
 
 2. Go to Netlify's website and click on the sign up button and sign up using your existing GitHub account.

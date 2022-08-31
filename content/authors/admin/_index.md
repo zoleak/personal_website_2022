@@ -2,14 +2,10 @@
 name: Kevin Zolea
 
 bio: 
-
-
-
 education:
   courses:
   - course: BS in Earth Science/Geoscience 
     institution: Kean University
-    year: 2017
 email: "kevin.zolea@gmail.com"
 
 highlight_name: true
