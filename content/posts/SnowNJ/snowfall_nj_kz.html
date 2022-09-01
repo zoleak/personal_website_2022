@@ -8,10 +8,12 @@ categories:
 tags:
   - R
   - ggplot2
-header:
-  image: ''
+image:
+  placement: 1
   caption: ''
   focal_point: ''
+  preview_only: false
+
 summary: Using the rnoaa package to get weather data into R and plot with ggplot2
 ---
 
@@ -42,28 +44,20 @@ stations &lt;- ncdc_stations(datasetid=&#39;GHCND&#39;,
 stations$data  
 
 </code></pre>
-<pre><code>## Warning: package &#39;rnoaa&#39; was built under R version 3.5.2</code></pre>
-<pre><code>##   elevation    mindate    maxdate latitude
-## 1      31.4 2008-01-27 2008-09-07 40.52446
-## 2      32.6 2008-01-28 2019-12-28 40.44700
-## 3      29.0 2008-02-12 2017-05-16 40.30030
-## 4      36.6 2008-03-10 2010-07-28 40.33919
-## 5      67.1 2008-03-10 2019-04-08 40.40990
-## 6      15.8 2008-04-15 2008-10-06 40.48711
-##                                name datacoverage                id
-## 1        PERTH AMBOY 1.2 WNW, NJ US       0.7600 GHCND:US1NJMD0001
-## 2  NORTH BRUNSWICK TWP 1.5 W, NJ US       0.8482 GHCND:US1NJMD0002
-## 3       CRANBURY TWP 0.9 SSW, NJ US       0.4654 GHCND:US1NJMD0006
-## 4         MONROE TWP 1.6 NNW, NJ US       0.6613 GHCND:US1NJMD0007
-## 5 SOUTH BRUNSWICK TWP 3.1 NW, NJ US       0.9657 GHCND:US1NJMD0009
-## 6          SOUTH AMBOY 0.9 W, NJ US       0.9086 GHCND:US1NJMD0011
-##   elevationUnit longitude
-## 1        METERS -74.29210
-## 2        METERS -74.50800
-## 3        METERS -74.52860
-## 4        METERS -74.44610
-## 5        METERS -74.57300
-## 6        METERS -74.29501</code></pre>
+<pre><code>##   elevation    mindate    maxdate latitude                              name
+## 1      31.4 2008-02-28 2008-09-07 40.52446        PERTH AMBOY 1.2 WNW, NJ US
+## 2      32.6 2008-02-28 2022-08-29 40.44700  NORTH BRUNSWICK TWP 1.5 W, NJ US
+## 3      29.0 2008-02-28 2017-05-16 40.30030       CRANBURY TWP 0.9 SSW, NJ US
+## 4      36.6 2008-03-10 2010-07-28 40.33919         MONROE TWP 1.6 NNW, NJ US
+## 5      67.1 2008-03-10 2022-08-29 40.40990 SOUTH BRUNSWICK TWP 3.1 NW, NJ US
+## 6      15.8 2008-04-15 2008-10-06 40.48711          SOUTH AMBOY 0.9 W, NJ US
+##   datacoverage                id elevationUnit longitude
+## 1       0.7617 GHCND:US1NJMD0001        METERS -74.29210
+## 2       0.7038 GHCND:US1NJMD0002        METERS -74.50800
+## 3       0.3871 GHCND:US1NJMD0006        METERS -74.52860
+## 4       0.5798 GHCND:US1NJMD0007        METERS -74.44610
+## 5       0.6890 GHCND:US1NJMD0009        METERS -74.57300
+## 6       0.9086 GHCND:US1NJMD0011        METERS -74.29501</code></pre>
 <p>This gives us the necessary information so we can start to pull the data. We can see what the minimum dates, maximum dates, latitude, station name, station ID, etc. so we can start getting an idea of what the data universe is for the stations around our area of interest. For my specific analysis, I want to find the stations with at least 10 years of data inside Middlesex County, NJ. From the looks of it, it seems as if the only ones are the following:</p>
 <pre><code>middlesex_stations&lt;-c(&quot;US1NJMD0062&quot;,&quot;US1NJMD0002&quot;,&quot;US1NJMD0063&quot;,&quot;US1NJMD0009&quot;,
             &quot;US1NJMD0024&quot;,&quot;GHCND:US1NJMD0028&quot;)</code></pre>
@@ -76,7 +70,7 @@ stations$data
 <li>keep_flags - TRUE/FALSE to keep any flags that each weather variable might have associated with the data</li>
 <li>date_min - A character string giving the earliest date the user would like in the final output formatted as “yyyy-mm-dd”</li>
 <li>date_max - A character string giving the latest date the user would like in the final output formatted as “yyyy-mm-dd”</li>
-<li>var - A character vector specifying the weather parameters to keep in the final data (ex: <code>&quot;SNOW&quot;</code>) A full list of the different possible weather variations can be found <a href="https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt" target="_blank">here</a></li>
+<li>var - A character vector specifying the weather parameters to keep in the final data (ex: <code>"SNOW"</code>) A full list of the different possible weather variations can be found <a href="https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt" target="_blank">here</a></li>
 </ul>
 <pre><code>middlesex_snow&lt;-meteo_pull_monitors(monitors=middlesex_stations,var = &quot;SNOW&quot;)
 </code></pre>
@@ -84,7 +78,7 @@ stations$data
 <pre><code>## Warning in meteo_pull_monitors(monitors = middlesex_stations, var = &quot;SNOW&quot;): The following stations could not be pulled from the GHCN ftp:
 ##  GHCND:US1NJMD0028 
 ## Any other monitors were successfully pulled from GHCN.</code></pre>
-<pre><code>## # A tibble: 6 x 3
+<pre><code>## # A tibble: 6 × 3
 ##   id          date        snow
 ##   &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt;
 ## 1 US1NJMD0002 2008-01-01    NA
@@ -93,7 +87,7 @@ stations$data
 ## 4 US1NJMD0002 2008-01-04    NA
 ## 5 US1NJMD0002 2008-01-05    NA
 ## 6 US1NJMD0002 2008-01-06    NA</code></pre>
-<p>From my very <strong><em>basic</em></strong> understanding of the package, I believe the warning message above is because the station <code>GHCND:US1NJMD0028</code> doesn’t have the variable <code>&quot;SNOW&quot;</code>. So this now leads us with only three stations to look at it.</p>
+<p>From my very <strong><em>basic</em></strong> understanding of the package, I believe the warning message above is because the station <code>GHCND:US1NJMD0028</code> doesn’t have the variable <code>"SNOW"</code>. So this now leads us with only three stations to look at it.</p>
 </div>
 <div id="filter-the-data-frame-with-dplyr" class="section level2">
 <h2>Filter the data frame with <code>dplyr</code></h2>
@@ -117,7 +111,7 @@ middlesex_stations&lt;-middlesex_snow%&gt;%
 ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
   geom_line()
 </code></pre>
-<p><img src="/post/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/www.kevinzolea.composts/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>As we can see from this plot, these three stations haven’t gotten a great deal of snow in December within the past 10 years. Granted, there are some gaps in the dataset and this probably isn’t the best dataset we could have used but it’s good enough for this blog post. One point of this plot that specifically stands out is the 22.9 in. snow total for US1NJMD0002 in 2010. This was a major storm that hit the east coast on December 27, 2010. The “Boxing Day Blizzard of 2010”, as they called it, was a rapidly developing nor’easter that completely tore through New Jersey. This is very noticeable in the plot, as a majority of the snowfall events didn’t even go over 5 in. Another thing to note after looking over the data frame is that there was no day in the past 10 years where there was snowfall on Christmas.</p>
 </div>
 <div id="customize-your-new-ggplot" class="section level2">
@@ -133,7 +127,7 @@ p&lt;-ggplot(data = middlesex_stations,aes(x=date,y=snow,color = id))+
 img&lt;-&quot;http://funny-photo.s3.amazonaws.com/preview/snow_effect/falling_snow_effect.jpeg&quot;
 ggbackground(p,img)
 </code></pre>
-<p><img src="/post/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/www.kevinzolea.composts/SnowNJ/snowfall_nj_kz_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>There’s a lot more customization you can do but that’s for another day. That’s the awesome thing about the <code>ggplot2</code> the options are endless for the amount of creativity you can pour into your plots. I hope you found this post helpful. If you have any questions, comments, or concerns please feel free to comment below. Thanks!</p>
 </div>
 </div>

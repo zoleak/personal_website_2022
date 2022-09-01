@@ -8,10 +8,12 @@ categories:
 tags:
   - R
   - ggplot2
-header:
-  image: ''
+image:
+  placement: 1
   caption: ''
   focal_point: ''
+  preview_only: false
+
 summary: Using the rnoaa package to get weather data into R and plot with ggplot2
 ---
 ---

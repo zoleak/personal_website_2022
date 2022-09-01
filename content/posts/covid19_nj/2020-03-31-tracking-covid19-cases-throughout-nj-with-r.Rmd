@@ -8,10 +8,12 @@ categories:
 tags:
   - R
 summary: Creating an animated time series map showing the spread of covid19 throughout NJ using the R programming language.
-header:
-  image: ''
+image:
+  placement: 1
   caption: ''
   focal_point: ''
+  preview_only: false
+
 ---
 #Introduction
 With all this Covid19 madness going on in the world, I felt inspired to utilize the vast amount of data we have from it. I came across a dataset by the [The NY Times](https://github.com/nytimes/covid-19-data){target="_blank"}. From reading over the GitHub repository, they obtain this time series data from state and local governments and health departments. To get a better sense of the data please go to the link above! The objective of what I am trying to accomplish is to create an animated time series map showing how Covid19 spread throughout NJ. 
