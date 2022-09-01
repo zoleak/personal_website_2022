@@ -19,7 +19,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: yes
+draft: true
 slug: "creating-a-3d-population-density-map-in-r-python"
 ---
 I recently came across an awesome plot created in R using the [rayshader package](https://www.rayshader.com/index.html){target="_blank"} and was completely amazed. The rayshader package allows you to produce 3D data visualizations in R. You can also translate [ggplot2](https://ggplot2.tidyverse.org/){target="_blank"} objects into 3D data visualizations. After reading over the package documentation, I gained some motivation to try the package out myself and make a 3D population density map. The 3D map that will be created will be a population density map of the US.

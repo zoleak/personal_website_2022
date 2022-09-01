@@ -11,12 +11,11 @@ subtitle: ''
 summary: Analyzing data from Fortune 1000 companies to gain insight into their organizations
 authors: []
 lastmod: '2022-04-05T11:14:04-04:00'
-featured: no
 image:
-  caption: ''
-  focal_point: ''
-  preview_only: no
-projects: []
+  placement: 1
+  caption: ""
+  focal_point: "Center"
+  preview_only: false
 ---
 My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are CEOs? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
 
