@@ -12,7 +12,7 @@ headless: true
 # Order that this section appears on the page.
 weight: 66
 
-title: Example plots I've created
+title: Example plots I've created using MATLAB, Python and R
 subtitle:
 
 design:
