@@ -30,7 +30,7 @@ library(reticulate)
 py_install("pandas")
 py_install("seaborn")
 py_install("squarify")
-py_install("matplotlib.pyplot")
+py_install("matplotlib")
 
 
 ```
@@ -61,7 +61,7 @@ df.head(n=10)
 
 My first question to answer is how many woman are CEOs. I was quickly able to see this by making a pie chart. As you can see from the chart, there are only 6.8% woman CEOs. 
 
-```{python, echo=F, warning=F, message=F, results = 'hide'}
+```{python, echo=F, warning=F, message=F}
 # Find out percent of woman CEOs
 wf= df['ceo_woman'].value_counts(normalize=True).to_frame()
 # Make pie chart of woman vs. men ceos
