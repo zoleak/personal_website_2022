@@ -24,6 +24,18 @@ I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fo
 
 Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analysis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
 
+```{r setup, include=FALSE,message=FALSE,warning=FALSE}
+
+library(reticulate)
+py_install("pandas")
+py_install("seaborn")
+py_install("squarify")
+py_install("matplotlib.pyplot")
+
+
+```
+
+
 #### Import modules used for analysis
 ```{python}
 import numpy as np
