@@ -24,7 +24,7 @@ I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fo
 
 Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analysis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
 
-```{r setup, include=FALSE,message=FALSE,warning=FALSE}
+```{r setup, include=FALSE,message=FALSE,warning=FALSE, results = 'hide'}
 
 library(reticulate)
 py_install("pandas")
@@ -51,7 +51,7 @@ import seaborn as sns
 
  The ```pandas``` package can be used to read in cvs files. After the data is read into python, it's always best to view the structure of your data and view the first few rows.
 
-```{python, echo=F, warning=F, message=F, results = 'hide'}
+```{python, echo=F, warning=F, message=F}
 df = pd.read_csv("Fortune_1000.csv") # Read csv file into python
 
 df.dtypes # see structure of data
@@ -78,7 +78,7 @@ plt.show()
 
 Next, lets see which states have the most companies. I will use a treemap to show this. Although this probably isn't the best chart to show this I thought it seemed pretty cool. California came out on top with 121.
 
-```{python, echo=F, warning=F, message=F, results = 'hide'}
+```{python, echo=F, warning=F, message=F}
 
 # Which states have the most fortune 1000 companies
 state_count = df['state'].value_counts().rename_axis('state').reset_index(name = 'counts')
