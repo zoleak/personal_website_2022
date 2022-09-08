@@ -94,20 +94,6 @@ plt.title('Top 10 States with the most headquarters')
 plt.show() 
 ```
 
-
-```{python}
-#Which sectors have the most fortune 1000 companies
-sector_count =  df['sector'].value_counts().rename_axis('sector').reset_index(name = 'counts')
-```
-
-```{python}
-# Is there a relationship between # of employees and revenue?
-sns.lmplot(x="revenue",y="num. of employees",
-           data=df)
-
-plt.show()
-```           
-           
 ```{python, echo=F, warning=F, message=F, results = 'hide'}
 # Profit vs. revenue in bar plot
 rev_prof = df.nlargest(5,'revenue')
