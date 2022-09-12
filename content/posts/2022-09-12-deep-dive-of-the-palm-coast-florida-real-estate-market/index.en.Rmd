@@ -1,0 +1,65 @@
+---
+title: Deep Dive of the Palm Coast Florida Real Estate Market
+author: Kevin Zolea
+date: '2022-09-12'
+slug: deep-dive-of-the-palm-coast-florida-real-estate-market
+categories:
+  - R
+  - Python
+tags:
+  - R
+  - Python
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-09-12T10:48:28-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+---
+#### Background for this post
+Although I have a strong passion for gaining insights from data, I also have a deep passion for all things real estate. A little over a year and half ago I purchased my first property. While this was going on, my parents actually moved to Palm Coast, Florida and built their retirement home. For a majority of my life my family has been vacationing in Palm Coast. I have seen this city grow exponentially since we first started going over 15 years ago. In todays post, I wanted to do a deep dive of the Palm Coast real estate market. 
+
+
+
+
+
+#### Scraping datatables from Palm Coast's 2021 growth report
+
+The first data point I want to look at is how many building permits Palm Coast has issued throughout the years.
+
+
+
+```{python}
+
+py_install("pandas")
+py_install("seaborn")
+py_install("squarify")
+py_install("matplotlib")
+py_install("tabula-py")
+
+```
+
+
+#### Import modules used for analysis
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import squarify # makes tree map
+import seaborn as sns
+import tabula
+
+```
+
+
+
+
+
+
+
+
