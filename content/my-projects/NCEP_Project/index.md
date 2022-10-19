@@ -26,8 +26,7 @@ This study is expected to provide feedback to the model developers at NCEP’s E
 
 ![](NCEP_Poster.png)
 
-{{< gdocs width=800 height=500 src="https://docs.google.com/document/d/e/2PACX-1vRmMJxl6omg3Z87VXmkQHuzM4dBRU7EDqKnMpEqMDezXie2ltNZZ2FkNWrlfDbNBw/pub" >}}
+![](NCEP_paper.pdf)
 
 
-<p><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQiYLR2wQZxayXUdIwO1exrs1mv3W5XCAVE3cHrA3PNAk4GLYm9uOt8wsjE0Fc9KsqxJ6oi501dsVaA/embed?start=false&loop=false&delayms=3000" frameborder="0" width="1056" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>
 
