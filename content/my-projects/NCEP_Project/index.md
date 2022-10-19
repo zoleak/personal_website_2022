@@ -26,7 +26,8 @@ This study is expected to provide feedback to the model developers at NCEP’s E
 
 ![](NCEP_Poster.png)
 
-![](NCEP_paper.pdf)
-
-
+<object data="NCEP_paper.pdf" width="750px" height="750px">
+    <embed src="NCEP_paper.pdf.pdf">
+    </embed>
+</object>
 
