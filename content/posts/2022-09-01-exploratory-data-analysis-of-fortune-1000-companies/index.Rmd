@@ -49,9 +49,9 @@ import seaborn as sns
 
 #### Read in data and perform EDA
 
- The ```pandas``` package can be used to read in cvs files. After the data is read into python, it's always best to view the structure of your data and view the first few rows.
+ The ```pandas``` package can be used to read in csv files. After the data is read into python, it's always best to view the structure of your data and view the first few rows.
 
-```{python, echo=F, warning=F, message=F}
+```{python, echo=T, warning=F, message=F}
 df = pd.read_csv("Fortune_1000.csv") # Read csv file into python
 
 df.dtypes # see structure of data
@@ -61,7 +61,7 @@ df.head(n=10)
 
 My first question to answer is how many woman are CEOs. I was quickly able to see this by making a pie chart. As you can see from the chart, there are only 6.8% woman CEOs. 
 
-```{python, echo=F, warning=F, message=F}
+```{python, echo=T, warning=F, message=F}
 # Find out percent of woman CEOs
 wf= df['ceo_woman'].value_counts(normalize=True).to_frame()
 # Make pie chart of woman vs. men ceos
@@ -94,7 +94,9 @@ plt.title('Top 10 States with the most headquarters')
 plt.show() 
 ```
 
-```{python, echo=F, warning=F, message=F, results = 'hide'}
+Lastly, I want to compare profit vs. revenue in a bar plot. 
+
+```{python, echo=T, warning=F, message=F, results = 'hide'}
 # Profit vs. revenue in bar plot
 rev_prof = df.nlargest(5,'revenue')
 rev_prof = pd.melt(rev_prof,id_vars = ['company'],value_vars = ['revenue','profit'])
@@ -127,4 +129,5 @@ the_table.set_fontsize(6)
 plt.show()
 ```
 
+As you can see, there are numerous different approaches on how to use EDA techniques to gain insights from data. These are just the tip of the iceburg. I recommend checking out [Python Plot Gallery](https://www.python-graph-gallery.com){target = "_blank"} to gain a sense of all the different plots you can create. It's a great resource to see whats possible!
 
