@@ -1,1 +1,1 @@
-My personal website built using the blogdown package in R. This website showcases the different projects I have been involved with in my academic/personal career.
+My personal website built using the blogdown package in R. This website showcases the different projects I have been involved with in my academic/personal career. See the following [blogpost](https://www.kevinzolea.com/posts/creating-a-website-with-the-academic-theme-in-blogdown/) to learn how I created the website.
