@@ -4,7 +4,7 @@ external_link: " https://kzolea695.shinyapps.io/NJ_State_Fueling_Stations_Map/"
 image:
   #caption: Photo by Toa Heftiba on Unsplash
   focal_point: Smart
-summary: Shiny app used to assist state field workers to find the nearest state vehicle fueling station closest to their field site. The data used in the app was web scraped from the following website: https://www.nj.gov/treasury/administration/statewide-support/motor-fuel-locations.shtml using the rvest package.
+summary: Shiny app used to assist state field workers to find the nearest state vehicle fueling station closest to their field site. The data used in this app was web scraped using the rvest package.
 tags:
 - Shiny
 title: NJ State Vehicle Fueling Station Map
