@@ -7,5 +7,5 @@ image:
 summary: Tableau dashboard used to vizualize sales data 
 tags:
 - Tableau
-title: Tableau customer sales dashboard
+title: Tableau Customer Sales Dashboard
 ---
