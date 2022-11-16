@@ -4,9 +4,9 @@ external_link: "https://kzolea695.shinyapps.io/NJDEP_Roadsalt_app/"
 image:
   #caption: Photo by Toa Heftiba on Unsplash
   focal_point: Smart
-summary: Shiny app used to assist the NJDEP with monitoring the affect of winter roadsalt application to waterways throughout the state
+summary: Shiny app used by NJDEP to monitor the effect of winter road salt application on waterways throughout the state
 tags:
 - Shiny
-title: NJDEP Roadsalt Analysis Project
+title: NJDEP Road Salt Analysis Project
 ---
   
