@@ -23,16 +23,16 @@ categories:
 
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
-<p>Being that I work for the <a href="https://www.nj.gov/dep/wms/" target="_blank">Division of Water Monitoring &amp; Standards</a>, I have to analyze a lot of water quality data. A majority of the data is in house from the samples we collect but most times I have to download data from online sources. These online sources usually consist of the same organizations and most have a pretty straight forward way of getting access to the data. However, the process of going to that organization’s website and getting whatever data you need is a bit time consuming. I always look for ways that I can automate a task and not have to do the same things over and over again. It wasn’t until recently that I learned about the <a href="https://cran.r-project.org/web/packages/dataRetrieval/dataRetrieval.pdf" target="_blank">dataRetrieval</a> package, which can do exactly that.</p>
+<p>As someone who works for the <a href="https://www.nj.gov/dep/wms/" target="_blank">Division of Water Monitoring &amp; Standards</a>, I spend a lot of time analyzing water quality data. While we collect a significant amount of data in-house, I often need to download additional data from online sources. These sources typically come from the same organizations, and obtaining the necessary data requires navigating their websites, which can be a time-consuming process. However, I’m always on the lookout for ways to automate tasks and streamline my workflow. Recently, I discovered the <a href="https://cran.r-project.org/web/packages/dataRetrieval/dataRetrieval.pdf" target="_blank">dataRetrieval</a> package, which provides a solution to this problem. With dataRetrieval, I can automate data retrieval tasks and avoid having to repeat the same steps over and over again.</p>
 </div>
 <div id="what-is-the-dataretrieval-package-how-does-it-work" class="section level3">
 <h3>What is the <code>dataRetrieval</code> package &amp; how does it work?</h3>
-<p>The <code>dataRetrieval</code> package is a collection of functions to help retrieve U.S. Geological Survey (<a href="https://www.usgs.gov" target="_blank">USGS</a>) and U.S. Environmental Protection Agency (<a href="https://www.epa.gov" target="_blank">EPA</a>) water quality and hydrology data from web services. With the dataRetrieval package you can discover, access, retrieve, and parse water data. The data comes from numerous different sources. The image below provides a nice overview of the different sources, data types, metadata, time series type, formats, and output.</p>
+<p>The <code>dataRetrieval</code> package is a collection of functions designed to facilitate the retrieval of U.S. Geological Survey (<a href="https://www.usgs.gov" target="_blank">USGS</a>) and U.S. Environmental Protection Agency (<a href="https://www.epa.gov" target="_blank">EPA</a>) water quality and hydrology data from web services. By using the <code>dataRetrieval</code> package, users can easily discover, access, retrieve, and parse water data from multiple sources. The data is obtained from various sources, and the image below provides a comprehensive overview of the different sources, data types, metadata, time series types, formats, and outputs available.</p>
 <div class="figure">
-<img src="data_source_example.png" alt="" />
+<img src="data_source_example.png" alt="Image Credit: USGS" />
 <p class="caption">Image Credit: USGS</p>
 </div>
-<p>I’m not going to go into all the different functions and usage of the <code>dataRetrieval</code> package but if you would like to learn more here are some of the sources I found the most useful:</p>
+<p>I’m not going to cover all the different functions and usages of the <code>dataRetrieval</code> package, but if you would like to learn more, here are some sources that I found to be the most useful:</p>
 <ul>
 <li><a href="https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html#usgs-web-retrievals" target="_blank">Introduction to the dataRetrieval package</a></li>
 <li><a href="https://acwi.gov/monitoring/conference/2016/0_monday_may2/A1B1/dataRetrieval%20Tutorial_secure.pdf" target="_blank">dataRetrieval Tutorial</a></li>
@@ -57,10 +57,9 @@ categories:
 </div>
 <div id="pull-data-with-the-readnwisuv-function" class="section level3">
 <h3>Pull data with the <code>readNWISuv()</code> function</h3>
-<p>For my analysis I am going to pull continuous specific conductance (SC) data for a site of intereset in NJ. With this specific conductance data, I will calculate Total dissolved solids (TDS). I will do this by using an equation from a correlation I made between SC &amp; TDS. Being that this isn’t the focus of the post, I will not go in detail about this. However, in a subsequent post I will explain how I did this.</p>
+<p>For my analysis, I am going to retrieve continuous specific conductance (SC) data for a site of interest in NJ using the dataRetrieval package. I will then use this specific conductance data to calculate Total Dissolved Solids (TDS) based on a correlation I established between SC and TDS. Since this isn’t the primary focus of this post, I won’t go into detail about the correlation. However, I plan to explain how I established it in a subsequent post.</p>
 <p><code>USGS_continuous_sc_data&lt;-readNWISuv("01408029","00095",tz = "America/New_York")</code></p>
-<p>For simplicity, I am only looking up one site and one type of parameter. You can look up multiple sites and parameters in one pull.
-Now lets take a look at a preview of the pull we just made.</p>
+<p>For simplicity, I am only looking up one site and one type of parameter. However, you can look up multiple sites and parameters in one pull. Now, let’s take a look at a preview of the data we just retrieved.</p>
 <pre><code>##   agency_cd  site_no            dateTime X_00095_00000 X_00095_00000_cd
 ## 1      USGS 01408029 2007-10-01 01:00:00           246                A
 ## 2      USGS 01408029 2007-10-01 01:15:00           246                A
@@ -88,7 +87,7 @@ Now lets take a look at a preview of the pull we just made.</p>
 </div>
 <div id="we-have-the-data-now-what" class="section level3">
 <h3>We have the data… now what?</h3>
-<p>Now that we have retrieved the data, we can now start manipulating it and create a plot. We will create the plot using the <code>ggplot2</code> package. I mentioned before that I was going to calculate TDS. Just to give some background… the reason I am doing this is because of a project I am working on that deals with roadsalt. I figured I would include it in this post just to show that you have a great deal of options in R. I will discuss my roadsalt research in more detail in later posts!</p>
+<p>Now that we have retrieved the data, we can start manipulating it and creating a plot using the <code>ggplot2</code> package. As mentioned earlier, I will calculate TDS because of a project related to roadsalt that I am working on. I wanted to include it in this post to demonstrate the wide range of options available in R. I will delve more into my roadsalt research in later posts!</p>
 </div>
 <div id="what-is-the-ggplot2-package" class="section level3">
 <h3>What is the ggplot2 package?</h3>
@@ -153,13 +152,15 @@ p
 </div>
 <div id="final-product" class="section level3">
 <h3>Final Product:</h3>
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
 <div id="what-is-this-plot-showing" class="section level3">
 <h3>What is this plot showing?</h3>
-<p>This plot is showing the calculated TDS concentration for the selected site from 2007-present day. The red line indicates the Freshwater Aquatic Life Criteria for TDS. In the most simpliest terms, when the graph shows the TDS concentration (green line) going over the red line, TDS is over the standard.</p>
+<p>This plot shows the calculated TDS concentration for the selected site from 2007 to the present day. The red line indicates the Freshwater Aquatic Life Criteria for TDS. In simplest terms, when the graph shows the TDS concentration (green line) going over the red line, TDS is above the standard.</p>
 </div>
 <div id="conclusion" class="section level3">
 <h3>Conclusion</h3>
-<p>As you can see, the <code>dataRetrieval</code> package is a very useful tool for water quality analysis. There is sooo much data you can obtain with just the ease of writing a few lines of code! I only touched base on <strong>1</strong> function! There are so many different functions you can use to gain access to all different types of water quality data. Definitly look over the resources I included in the beginning if you want to learn more. I know this post was very basic but I hope it has helped you in some way. If you have any questions feel free to reach out to me!</p>
+<p>The <code>dataRetrieval</code> package is an incredibly useful tool for water quality analysis. With just a few lines of code, you can obtain a vast amount of data. In this post, I have only covered one function, but there are many others available to access various types of water quality data. Be sure to review the resources I provided at the beginning of the post if you want to learn more. Although this post was basic, I hope it has been helpful in some way. If you have any questions, please do not hesitate to reach out to me!</p>
 </div>
