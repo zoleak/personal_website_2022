@@ -1,0 +1,150 @@
+---
+title: "Tracking Covid19 Cases Throughout NJ with R"
+author: "Kevin Zolea"
+date: '2020-04-08'
+image:
+  caption: ''
+  focal_point: ''
+  placement: 1
+  preview_only: no
+slug: tracking-covid19-cases-throughout-nj-with-r
+summary: Creating an animated time series map showing the spread of covid19 throughout
+  NJ using the R programming language.
+tags: R
+categories: R
+---
+
+
+
+<p>#Introduction</p>
+<p>With the ongoing Covid19 pandemic affecting the world, I felt inspired to utilize the vast amount of data we have from it. I came across a dataset by <a href="https://github.com/nytimes/covid-19-data" target="_blank">The NY Times</a>that contains time series data on Covid19 cases and deaths in the United States, sourced from state and local governments as well as health departments. You can access the dataset through the hyperlink above. My objective is to use this data to create an animated time series map that shows the spread of Covid19 throughout New Jersey over time.</p>
+<p>#Read in the data</p>
+<p>To read in the data I will use the <code>readr</code> package.</p>
+<pre class="r"><code>library(readr) #loads package
+
+covid19_data&lt;-read_csv(&quot;us_counties.csv&quot;) #function that reads in csv files</code></pre>
+<p>Now that the data is read in.. lets check the structure of the data</p>
+<pre class="r"><code>str(covid19_data)</code></pre>
+<pre><code>## spc_tbl_ [61,971 × 6] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ date  : Date[1:61971], format: &quot;2020-01-21&quot; &quot;2020-01-22&quot; ...
+##  $ county: chr [1:61971] &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Cook&quot; ...
+##  $ state : chr [1:61971] &quot;Washington&quot; &quot;Washington&quot; &quot;Washington&quot; &quot;Illinois&quot; ...
+##  $ fips  : chr [1:61971] &quot;53061&quot; &quot;53061&quot; &quot;53061&quot; &quot;17031&quot; ...
+##  $ cases : num [1:61971] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ deaths: num [1:61971] 0 0 0 0 0 0 0 0 0 0 ...
+##  - attr(*, &quot;spec&quot;)=
+##   .. cols(
+##   ..   date = col_date(format = &quot;&quot;),
+##   ..   county = col_character(),
+##   ..   state = col_character(),
+##   ..   fips = col_character(),
+##   ..   cases = col_double(),
+##   ..   deaths = col_double()
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
+<p>Everything seems to look correct. All the columns seem to have the right structure!</p>
+<p>#Filter data</p>
+<p>Being that we only want to see how Covid19 spread in the state of New Jersey, we will filter the dataset to only show cases that occurred within the state. This can be achieved using the <code>dplyr</code> package, which provides a convenient way to filter, manipulate, and summarize data in R. However, the dataset also contains a significant number of cases that are labeled as ‘Unknown.’ These cases are reported separately by state health departments when the patient’s county of residence is unknown or pending determination. Since we are interested in analyzing the spread of Covid19 at the county level, we will remove these cases as we cannot link them to a specific county.</p>
+<pre class="r"><code>library(dplyr) # used for data wrangling
+
+NJ_covid19&lt;-covid19_data%&gt;%
+  dplyr::filter(state == &quot;New Jersey&quot;,county != &quot;Unknown&quot;) #filters data frame
+
+head(NJ_covid19) # Returns the first or last parts of the data frame </code></pre>
+<pre><code>## # A tibble: 6 × 6
+##   date       county state      fips  cases deaths
+##   &lt;date&gt;     &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2020-03-04 Bergen New Jersey 34003     1      0
+## 2 2020-03-05 Bergen New Jersey 34003     2      0
+## 3 2020-03-06 Bergen New Jersey 34003     3      0
+## 4 2020-03-06 Camden New Jersey 34007     1      0
+## 5 2020-03-07 Bergen New Jersey 34003     3      0
+## 6 2020-03-07 Camden New Jersey 34007     1      0</code></pre>
+<p>#Obtain county shapefile</p>
+<p>Since the data frame does not contain any geographic information such as boundaries or polygons, I need to download a shapefile of New Jersey’s counties to join to the NJ_covid19 data frame. Luckily, the New Jersey Office of GIS has a great website to download hundreds of spatial datasets across the state. You can find the website <a href="https://njogis-newjersey.opendata.arcgis.com" target="_blank">here</a>. By going to this website, I can download the county shapefile in ESRI shapefile format, which contains boundary information for each of New Jersey’s counties.</p>
+<p>#Read in county shapefile</p>
+<p>I can read in the NJ county shapefile using the <code>sf</code> package, which is an excellent tool for working with spatial data. The <code>sf</code> package provides a wide range of functions and tools for spatial data analysis, including the ability to read and write different spatial data formats, perform geometric operations, and create maps and visualizations.</p>
+<pre class="r"><code>library(sf)
+
+NJ_counties&lt;-st_read(getwd(),&quot;New_Jersey_Counties&quot;) #function to read in shapefile</code></pre>
+<pre><code>## Reading layer `New_Jersey_Counties&#39; from data source 
+##   `C:\Users\kzolea\Desktop\personal_website_2022\content\posts\covid19_nj&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 21 features and 22 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 193684.7 ymin: 34945.75 xmax: 657059.7 ymax: 919549.4
+## Projected CRS: NAD83 / New Jersey (ftUS)</code></pre>
+<p>As you can see in the screenshot above, the shapefile was successfully read into R. Now let’s plot it to ensure that everything is working correctly.</p>
+<pre class="r"><code>plot(st_geometry(NJ_counties)) </code></pre>
+<p><img src="/www.kevinzolea.composts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>#Join shapefile to data frame</p>
+<p>To create a map with the original data, we need to join the shapefile (NJ_counties) with the NJ_covid19 data frame using the <code>left_join()</code> function from the <code>dplyr</code> package. This function will join the two datasets based on a common column, which in this case is the county column. First, we need to make the county column header in the NJ_counties dataset lowercase, so we can match it with the NJ_covid19 data frame. Then, we need to make all the counties in the county column lowercase in both datasets to ensure they match. See the code below for the implementation.</p>
+<pre class="r"><code>names(NJ_counties)&lt;-tolower(names(NJ_counties)) # Makes county column header lowercase
+
+NJ_counties$county&lt;-tolower(NJ_counties$county)#Makes all rows in the county column lowercase
+
+NJ_covid19$county&lt;-tolower(NJ_covid19$county)#Makes all rows in the county column lowercase</code></pre>
+<p>Now I can join the two datasets based on the county column in both.</p>
+<pre class="r"><code>NJ_covid19_shapes&lt;-left_join(NJ_covid19,NJ_counties,by=&quot;county&quot;)%&gt;%
+  dplyr::select(date,county,state,cases,deaths,geometry)#selects only the columns of interest
+
+head(NJ_covid19_shapes)</code></pre>
+<pre><code>## # A tibble: 6 × 6
+##   date       county state      cases deaths                             geometry
+##   &lt;date&gt;     &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;MULTIPOLYGON [US_survey_foot]&gt;
+## 1 2020-03-04 bergen New Jersey     1      0 (((656201 783614.4, 656141.1 783413…
+## 2 2020-03-05 bergen New Jersey     2      0 (((656201 783614.4, 656141.1 783413…
+## 3 2020-03-06 bergen New Jersey     3      0 (((656201 783614.4, 656141.1 783413…
+## 4 2020-03-06 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…
+## 5 2020-03-07 bergen New Jersey     3      0 (((656201 783614.4, 656141.1 783413…
+## 6 2020-03-07 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…</code></pre>
+<p>#Make map with ggplot2 and gganimate</p>
+<p>With the data manipulation complete, it’s time to build the actual map. To create the final animated time series map of how Covid19 spread throughout New Jersey’s counties, I’ll be using the <code>ggplot2</code> package in conjunction with the <code>gganimate</code> package.</p>
+<pre class="r"><code>library(ggplot2) #Used for plotting
+library(gganimate) #Used for animations
+library(RColorBrewer) #Used for color scale 
+
+# Used to make new data frame an sf object
+# Must use st_as_sf in order to use geom_sf() to plot polygons
+NJ_covid19_shapes&lt;-st_as_sf(NJ_covid19_shapes)
+# Makes plot with ggplot2 and gganimate to animate through the days 
+covid_map&lt;-ggplot()+
+  geom_sf(data = NJ_counties,fill = &quot;white&quot;)+
+  geom_sf(data = NJ_covid19_shapes,aes(fill=cases))+
+  ggtitle(&quot;Spread of COVID-19 Throughout New Jersey&quot;)+
+  xlab(&quot;&quot;)+
+  ylab(&quot;&quot;)+
+  labs(subtitle = &quot;Date: {current_frame}&quot;,
+       caption = &quot;Data Source: The New York Times\nAuthor: Kevin Zolea&quot;)+
+  cowplot::background_grid(major = &quot;none&quot;, minor = &quot;none&quot;) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_blank(),
+        legend.position=c(-0.3,0.8),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(colour=&quot;black&quot;, size=12, face=&quot;bold&quot;),
+        plot.title=element_text(size=20, face=&quot;bold&quot;,hjust =0.5),
+        plot.subtitle = element_text(hjust = 0.5,size=12),
+        plot.caption = element_text(size = 11,
+                                    hjust = .5,
+                                    color = &quot;black&quot;,
+                                    face = &quot;bold&quot;))+
+  scale_fill_distiller(&quot;Number of Positive Cases&quot;,
+                       palette =&quot;Reds&quot;,type = &quot;div&quot;,
+                       direction = 1)+
+  transition_manual(date)
+
+  animate(covid_map, nframe=27,fps = 2, end_pause = 15,height = 500, width =500)</code></pre>
+<p><img src="/www.kevinzolea.composts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-8-1.gif" /><!-- --></p>
+<p>#Things to note about above code</p>
+<p>Since I merged a non-spatial dataset with a spatial one, I needed to use <code>st_as_sf()</code> to convert it into an sf object for use with the <code>geom_sf()</code> function. While experimenting with the <code>transition_time()</code> function, I found that the polygons on the map moved unpredictably. To solve this, I used <code>transition_manual()</code> instead. With the animate function, I could adjust the speed of the animation, number of frames, height, width, and more. For more information on the <code>gganimate</code> package and <code>ggplot2</code> package, check out the following resources:</p>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org" target="_blank">ggplot2 main page</a></li>
+<li><a href="https://gganimate.com" target="_blank">gganimate main page</a></li>
+</ul>
+<p>#Conclusion</p>
+<p>Based on the animated time series map created using the NY Times COVID-19 dataset and NJ Office of GIS county shapefile, it is evident that the majority of positive cases are located in the northern parts of NJ. This pattern is to be expected, given the region’s higher population density and proximity to neighboring state NY, which has been one of the hardest hit states in the US. However, it is also important to note any trends or changes in the data over time and to compare it to other regions or states for a more comprehensive understanding. These findings may have significant implications for public health policies and healthcare resource allocation in NJ and beyond. To learn more about the analysis and methodology used in this project, please refer to the earlier sections of this post.</p>
