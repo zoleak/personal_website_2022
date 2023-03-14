@@ -16,9 +16,12 @@ categories: R
 
 
 
-<p>#Introduction</p>
-<p>With the ongoing Covid19 pandemic affecting the world, I felt inspired to utilize the vast amount of data we have from it. I came across a dataset by <a href="https://github.com/nytimes/covid-19-data" target="_blank">The NY Times</a>that contains time series data on Covid19 cases and deaths in the United States, sourced from state and local governments as well as health departments. You can access the dataset through the hyperlink above. My objective is to use this data to create an animated time series map that shows the spread of Covid19 throughout New Jersey over time.</p>
-<p>#Read in the data</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>With the ongoing Covid19 pandemic affecting the world, I felt inspired to utilize the vast amount of data we have from it. I came across a dataset by <a href="https://github.com/nytimes/covid-19-data" target="_blank">The NY Times</a> that contains time series data on Covid19 cases and deaths in the United States, sourced from state and local governments as well as health departments. You can access the dataset through the hyperlink above. My objective is to use this data to create an animated time series map that shows the spread of Covid19 throughout New Jersey over time.</p>
+</div>
+<div id="read-in-the-data" class="section level1">
+<h1>Read in the data</h1>
 <p>To read in the data I will use the <code>readr</code> package.</p>
 <pre class="r"><code>library(readr) #loads package
 
@@ -43,7 +46,9 @@ covid19_data&lt;-read_csv(&quot;us_counties.csv&quot;) #function that reads in c
 ##   .. )
 ##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Everything seems to look correct. All the columns seem to have the right structure!</p>
-<p>#Filter data</p>
+</div>
+<div id="filter-data" class="section level1">
+<h1>Filter data</h1>
 <p>Being that we only want to see how Covid19 spread in the state of New Jersey, we will filter the dataset to only show cases that occurred within the state. This can be achieved using the <code>dplyr</code> package, which provides a convenient way to filter, manipulate, and summarize data in R. However, the dataset also contains a significant number of cases that are labeled as ‘Unknown.’ These cases are reported separately by state health departments when the patient’s county of residence is unknown or pending determination. Since we are interested in analyzing the spread of Covid19 at the county level, we will remove these cases as we cannot link them to a specific county.</p>
 <pre class="r"><code>library(dplyr) # used for data wrangling
 
@@ -60,9 +65,13 @@ head(NJ_covid19) # Returns the first or last parts of the data frame </code></pr
 ## 4 2020-03-06 Camden New Jersey 34007     1      0
 ## 5 2020-03-07 Bergen New Jersey 34003     3      0
 ## 6 2020-03-07 Camden New Jersey 34007     1      0</code></pre>
-<p>#Obtain county shapefile</p>
+</div>
+<div id="obtain-county-shapefile" class="section level1">
+<h1>Obtain county shapefile</h1>
 <p>Since the data frame does not contain any geographic information such as boundaries or polygons, I need to download a shapefile of New Jersey’s counties to join to the NJ_covid19 data frame. Luckily, the New Jersey Office of GIS has a great website to download hundreds of spatial datasets across the state. You can find the website <a href="https://njogis-newjersey.opendata.arcgis.com" target="_blank">here</a>. By going to this website, I can download the county shapefile in ESRI shapefile format, which contains boundary information for each of New Jersey’s counties.</p>
-<p>#Read in county shapefile</p>
+</div>
+<div id="read-in-county-shapefile" class="section level1">
+<h1>Read in county shapefile</h1>
 <p>I can read in the NJ county shapefile using the <code>sf</code> package, which is an excellent tool for working with spatial data. The <code>sf</code> package provides a wide range of functions and tools for spatial data analysis, including the ability to read and write different spatial data formats, perform geometric operations, and create maps and visualizations.</p>
 <pre class="r"><code>library(sf)
 
@@ -78,7 +87,9 @@ NJ_counties&lt;-st_read(getwd(),&quot;New_Jersey_Counties&quot;) #function to re
 <p>As you can see in the screenshot above, the shapefile was successfully read into R. Now let’s plot it to ensure that everything is working correctly.</p>
 <pre class="r"><code>plot(st_geometry(NJ_counties)) </code></pre>
 <p><img src="/www.kevinzolea.composts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>#Join shapefile to data frame</p>
+</div>
+<div id="join-shapefile-to-data-frame" class="section level1">
+<h1>Join shapefile to data frame</h1>
 <p>To create a map with the original data, we need to join the shapefile (NJ_counties) with the NJ_covid19 data frame using the <code>left_join()</code> function from the <code>dplyr</code> package. This function will join the two datasets based on a common column, which in this case is the county column. First, we need to make the county column header in the NJ_counties dataset lowercase, so we can match it with the NJ_covid19 data frame. Then, we need to make all the counties in the county column lowercase in both datasets to ensure they match. See the code below for the implementation.</p>
 <pre class="r"><code>names(NJ_counties)&lt;-tolower(names(NJ_counties)) # Makes county column header lowercase
 
@@ -99,7 +110,9 @@ head(NJ_covid19_shapes)</code></pre>
 ## 4 2020-03-06 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…
 ## 5 2020-03-07 bergen New Jersey     3      0 (((656201 783614.4, 656141.1 783413…
 ## 6 2020-03-07 camden New Jersey     1      0 (((342764 423475.8, 342804.1 423429…</code></pre>
-<p>#Make map with ggplot2 and gganimate</p>
+</div>
+<div id="make-map-with-ggplot2-and-gganimate" class="section level1">
+<h1>Make map with ggplot2 and gganimate</h1>
 <p>With the data manipulation complete, it’s time to build the actual map. To create the final animated time series map of how Covid19 spread throughout New Jersey’s counties, I’ll be using the <code>ggplot2</code> package in conjunction with the <code>gganimate</code> package.</p>
 <pre class="r"><code>library(ggplot2) #Used for plotting
 library(gganimate) #Used for animations
@@ -140,11 +153,16 @@ covid_map&lt;-ggplot()+
 
   animate(covid_map, nframe=27,fps = 2, end_pause = 15,height = 500, width =500)</code></pre>
 <p><img src="/www.kevinzolea.composts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-8-1.gif" /><!-- --></p>
-<p>#Things to note about above code</p>
+</div>
+<div id="things-to-note-about-above-code" class="section level1">
+<h1>Things to note about above code</h1>
 <p>Since I merged a non-spatial dataset with a spatial one, I needed to use <code>st_as_sf()</code> to convert it into an sf object for use with the <code>geom_sf()</code> function. While experimenting with the <code>transition_time()</code> function, I found that the polygons on the map moved unpredictably. To solve this, I used <code>transition_manual()</code> instead. With the animate function, I could adjust the speed of the animation, number of frames, height, width, and more. For more information on the <code>gganimate</code> package and <code>ggplot2</code> package, check out the following resources:</p>
 <ul>
 <li><a href="https://ggplot2.tidyverse.org" target="_blank">ggplot2 main page</a></li>
 <li><a href="https://gganimate.com" target="_blank">gganimate main page</a></li>
 </ul>
-<p>#Conclusion</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
 <p>Based on the animated time series map created using the NY Times COVID-19 dataset and NJ Office of GIS county shapefile, it is evident that the majority of positive cases are located in the northern parts of NJ. This pattern is to be expected, given the region’s higher population density and proximity to neighboring state NY, which has been one of the hardest hit states in the US. However, it is also important to note any trends or changes in the data over time and to compare it to other regions or states for a more comprehensive understanding. These findings may have significant implications for public health policies and healthcare resource allocation in NJ and beyond. To learn more about the analysis and methodology used in this project, please refer to the earlier sections of this post.</p>
+</div>
