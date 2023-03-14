@@ -14,9 +14,11 @@ tags: R
 categories: R
 ---
 #Introduction
+
 With the ongoing Covid19 pandemic affecting the world, I felt inspired to utilize the vast amount of data we have from it. I came across a dataset by [The NY Times](https://github.com/nytimes/covid-19-data){target="_blank"}that contains time series data on Covid19 cases and deaths in the United States, sourced from state and local governments as well as health departments. You can access the dataset through the hyperlink above. My objective is to use this data to create an animated time series map that shows the spread of Covid19 throughout New Jersey over time.
 
 #Read in the data
+
 To read in the data I will use the ```readr``` package.
 ```{r message=FALSE}
 library(readr) #loads package
