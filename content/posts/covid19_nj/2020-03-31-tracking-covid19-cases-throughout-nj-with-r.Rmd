@@ -35,6 +35,7 @@ str(covid19_data)
 Everything seems to look correct. All the columns seem to have the right structure!
 
 #Filter data
+
 Being that we only want to see how Covid19 spread in the state of New Jersey, we will filter the dataset to only show cases that occurred within the state. This can be achieved using the ```dplyr``` package, which provides a convenient way to filter, manipulate, and summarize data in R. However, the dataset also contains a significant number of cases that are labeled as 'Unknown.' These cases are reported separately by state health departments when the patient's county of residence is unknown or pending determination. Since we are interested in analyzing the spread of Covid19 at the county level, we will remove these cases as we cannot link them to a specific county.
 ```{r message=FALSE, warning=FALSE}
 library(dplyr) # used for data wrangling
@@ -46,9 +47,11 @@ head(NJ_covid19) # Returns the first or last parts of the data frame
 ```
 
 #Obtain county shapefile
+
 Since the data frame does not contain any geographic information such as boundaries or polygons, I need to download a shapefile of New Jersey's counties to join to the NJ_covid19 data frame. Luckily, the New Jersey Office of GIS has a great website to download hundreds of spatial datasets across the state. You can find the website [here](https://njogis-newjersey.opendata.arcgis.com){target="_blank"}. By going to this website, I can download the county shapefile in ESRI shapefile format, which contains boundary information for each of New Jersey's counties.
 
 #Read in county shapefile
+
 I can read in the NJ county shapefile using the ```sf``` package, which is an excellent tool for working with spatial data. The ```sf``` package provides a wide range of functions and tools for spatial data analysis, including the ability to read and write different spatial data formats, perform geometric operations, and create maps and visualizations.
 
 ```{r message=FALSE, warning=FALSE}
@@ -66,6 +69,7 @@ plot(st_geometry(NJ_counties))
 ```
 
 #Join shapefile to data frame
+
 To create a map with the original data, we need to join the shapefile (NJ_counties) with the NJ_covid19 data frame using the ```left_join()``` function from the ```dplyr``` package. This function will join the two datasets based on a common column, which in this case is the county column. First, we need to make the county column header in the NJ_counties dataset lowercase, so we can match it with the NJ_covid19 data frame. Then, we need to make all the counties in the county column lowercase in both datasets to ensure they match. See the code below for the implementation.
 ```{r}
 names(NJ_counties)<-tolower(names(NJ_counties)) # Makes county column header lowercase
@@ -140,4 +144,5 @@ Since I merged a non-spatial dataset with a spatial one, I needed to use ```st_a
 * [gganimate main page](https://gganimate.com){target="_blank"}
 
 #Conclusion
+
 Based on the animated time series map created using the NY Times COVID-19 dataset and NJ Office of GIS county shapefile, it is evident that the majority of positive cases are located in the northern parts of NJ. This pattern is to be expected, given the region's higher population density and proximity to neighboring state NY, which has been one of the hardest hit states in the US. However, it is also important to note any trends or changes in the data over time and to compare it to other regions or states for a more comprehensive understanding. These findings may have significant implications for public health policies and healthcare resource allocation in NJ and beyond. To learn more about the analysis and methodology used in this project, please refer to the earlier sections of this post.
