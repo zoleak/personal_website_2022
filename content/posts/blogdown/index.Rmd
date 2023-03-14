@@ -20,13 +20,13 @@ header:
 
 
 ### Introduction:
-I have been told by a countless number of people that creating a personal website is a great way to showcase your skills and tell your story. I have been contemplating this for some time but kept procrastinating. The two biggest excuses I kept telling myself was that it would be too difficult & it would cost money. Boy was I wrong! It wasn't until I started using R this past year that I realized how wrong I was. After a quick google search I came across the [blogdown](https://cran.r-project.org/web/packages/blogdown/blogdown.pdf){target="_blank"} package. `Blogdown` is an amazing package in which you can create blogs and websites with [R Markdown](https://rmarkdown.rstudio.com/){target="_blank"}. Now I'm not saying that this stuff is extremely easy but if someone like myself(absolutely no website development knowledge) can do it, **YOU CAN TOO!** This blog post isn't a sure fire way to do it but more of an overview of how I did it. I would also like to point out that this is a **very basic introduction ** to creating a blog/website with blogdown. The amount of things you can do with this package is almost endless.. especially if you have an understanding of CSS, HTML, and Javascript.
+I've been told countless times that creating a personal website is an excellent way to showcase one's skills and tell their story. However, I kept procrastinating, using the excuses that it would be too difficult and too costly. But after discovering the blogdown package while using R this past year, I realized how wrong I was. [Blogdown](https://cran.r-project.org/web/packages/blogdown/blogdown.pdf){target="_blank"} is an incredible package that allows you to create blogs and websites using R Markdown. While it's not necessarily a piece of cake, I found that even with no prior website development knowledge, I was able to create a site with relative ease. This blog post provides an overview of how I did it, although it's by no means an exhaustive guide. I should also note that this is just a basic introduction to creating a website/blog with blogdown - the possibilities are almost endless, especially if you have a grasp of CSS, HTML, and Javascript.
 
 ![](https://media.giphy.com/media/Rl9Yqavfj2Ula/giphy.gif)
 
 
 ### Prerequisites:
-Before you jump right in I recommend reading some online material and watching some youtube videos. Here is a list of the resources that helped me a lot.
+Before you dive in, I recommend reading some online material and watching some YouTube videos to get a better understanding of the process. Here are some resources that helped me a lot:
 
 * [blogdown: Creating Websites with R Markdown](https://bookdown.org/yihui/blogdown/){target="_blank"}
 
@@ -59,6 +59,7 @@ The command should look like this:
 
 If all went well then you should see a folder with the files in your repo in the directory that you chose.
 ![](folder_stuff.png)
+
 ### Getting started with the blogdown package in Rstudio
 
 The time has finally come to start creating the site.
@@ -87,7 +88,9 @@ An example site should now be previewed in the Viewer panel of Rstudio.
 
 6. Personalize the website
 
-I am not going to go over this because I am still learning how to do this myself. The main thing you should know is that you can edit the example site in any way you would like. You can change the title, fonts, color scheme, widgets used, etc. If you decide to use the Academic Theme look over the [documentation](https://sourcethemes.com/academic/docs/){target="_blank"} . The author of the theme goes into great detail on how to get started and the different levels of customization you can do. The last thing I am going to touch base on is how to get your new site deployed to Netlify.
+I'm still learning how to deploy a website myself, so I won't cover that in detail. However, it's important to know that you have full control over the example site that Blogdown generates, and you can customize it to your heart's content. You can change the site's title, fonts, color scheme, widgets, and more. If you decide to use the Academic Theme, be sure to read through the [documentation](https://sourcethemes.com/academic/docs/){target="_blank"} thoroughly. The theme's author provides detailed instructions on how to get started and the various levels of customization available.
+
+Regarding deployment, there are several options available. One popular choice is Netlify, which makes it easy to host and deploy your site for free. Netlify has a simple drag-and-drop interface, and you can connect it to your GitHub repository for automatic deployments. Once you've set up your Netlify account, you can deploy your site in just a few clicks.
 
 
 ### Deploy in Netlify
@@ -111,7 +114,7 @@ You should see all your files there. Highlight all the files you want to commit 
 
 ### Final Thoughts
 
-As you can see, it isn't as difficult as you may have thought to create your own website/blog. `Blogdown` is a great resource to utilize. Like I mentioned in the beginning, this is a very **basic** introduction into `blogdown`. There is so much more you can do to your website to make it awesome! I hope this post has helped you in some way in getting your website going. If you have an comments, constructive critism, questions, etc. please let me know and contact me.
+As you can see, creating your own website/blog is not as difficult as you may have initially thought. Blogdown is an excellent resource to utilize, and the resources provided above can help you get started. This is just a basic introduction to Blogdown, and there is so much more you can do to make your website amazing! I hope this post has helped you in some way to get your website going. If you have any comments, constructive criticism, or questions, please do not hesitate to contact me.
 
 
 
