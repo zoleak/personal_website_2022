@@ -1,19 +1,17 @@
 ---
-title: Tracking Covid19 Cases Throughout NJ with R
-author: Kevin Zolea
+title: "Tracking Covid19 Cases Throughout NJ with R"
+author: "Kevin Zolea"
 date: '2020-04-08'
-slug: tracking-covid19-cases-throughout-nj-with-r
-categories:
-  - R
-tags:
-  - R
-summary: Creating an animated time series map showing the spread of covid19 throughout NJ using the R programming language.
 image:
-  placement: 1
   caption: ''
   focal_point: ''
-  preview_only: false
-
+  placement: 1
+  preview_only: no
+slug: tracking-covid19-cases-throughout-nj-with-r
+summary: Creating an animated time series map showing the spread of covid19 throughout
+  NJ using the R programming language.
+tags: R
+categories: R
 ---
 
 
@@ -141,6 +139,7 @@ covid_map&lt;-ggplot()+
   transition_manual(date)
 
   animate(covid_map, nframe=27,fps = 2, end_pause = 15,height = 500, width =500)</code></pre>
+<p><img src="/www.kevinzolea.composts/covid19_nj/2020-03-31-tracking-covid19-cases-throughout-nj-with-r_files/figure-html/unnamed-chunk-8-1.gif" /><!-- --></p>
 <p>#Things to note about above code</p>
 <p>Since I merged a non-spatial dataset with a spatial one, I needed to use <code>st_as_sf()</code> to convert it into an sf object for use with the <code>geom_sf()</code> function. While experimenting with the <code>transition_time()</code> function, I found that the polygons on the map moved unpredictably. To solve this, I used <code>transition_manual()</code> instead. With the animate function, I could adjust the speed of the animation, number of frames, height, width, and more. For more information on the <code>gganimate</code> package and <code>ggplot2</code> package, check out the following resources:</p>
 <ul>
