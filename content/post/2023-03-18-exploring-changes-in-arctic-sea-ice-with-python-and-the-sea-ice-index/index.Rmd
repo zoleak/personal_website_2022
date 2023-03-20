@@ -1,0 +1,192 @@
+---
+title: "Exploring Changes in Arctic Sea Ice with Python and the Sea Ice Index"
+author: "Kevin Zolea"
+date: "2023-03-18"
+slug: "exploring-changes-in-arctic-sea-ice-with-python-and-the-sea-ice-index"
+categories: python
+tags: python
+subtitle: 'Analyzing the National Snow and Ice Data Centers Sea Ice Index'
+summary: 'This blog post explores changes in Arctic sea ice over time using Python and the Sea Ice Index. The National Snow and Ice Data Centers (NSIDC) Sea Ice Index is a valuable resource for studying Arctic sea ice, and this post demonstrates how to download, load, and analyze the data using Python.'
+authors: []
+lastmod: "2023-03-18T18:03:55-04:00"
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+
+---
+
+#Introduction 
+
+The Arctic sea ice is one of the most sensitive indicators of climate change, and its decline has been well documented over the last few decades. As a data analyst interested in climate research, I wanted to explore this phenomenon and see if I could gain any insights from analyzing the Sea Ice Index. However, getting the data was not as straightforward as I initially thought. After some research, I discovered that I could access the data via FTP from the National Snow and Ice Data Center (NSIDC) [website](https://nsidc.org/home){target="_blank"}. With the data in hand, I turned to Python to do my analysis. In this blog post, I will walk through the steps I took to acquire the data and how I used Python and the Sea Ice Index to explore changes in Arctic sea ice over time.
+
+#The Sea Ice Index
+
+The Sea Ice Index is a dataset created by the NSIDC that provides information on Arctic and Antarctic sea ice extent and area. The dataset is based on satellite observations and includes daily, monthly, and yearly data from 1978 to the present. The Sea Ice Index is widely used by researchers and policymakers to monitor changes in Arctic and Antarctic sea ice and to understand the impact of climate change on these regions.
+
+#Downloading the Sea Ice Index Data from NSIDC
+
+To access the Sea Ice Index data, we can use FTP to download the files from the NSIDC server. Here is a sample [Python script](https://nsidc.org/data/user-resources/help-center/how-access-data-using-ftp-client-command-line-wget-or-python){target="_blank"} provided by NSIDC to download all the files within a directory on the FTP server:
+```
+#!/usr/bin/env python
+# NSIDC
+# Sample script to download all the files within one directory on the FTP server
+#
+# Requires Python3 and the ftplib and os libraries
+
+from ftplib import FTP
+import os
+
+### The following 3 variables can be changed ###
+# 1. Set the directory you would like to download the files to
+destdir='path to directory'
+
+# 2. Set the path to the FTP directory that contains the data you wish to download.
+# This example is for the daily northern hemisphere data from the Sea Ice Index
+# https://nsidc.org/data/g02135
+directory = 'DATASETS/NOAA/G02135/seaice_analysis/'
+
+# 3. Set the password which will be your email address
+password = 'kevin.zolea@gmail.com'
+
+############################################
+### Don't need to change this code below ###
+############################################
+# FTP server
+ftpdir = 'sidads.colorado.edu'
+
+#Connect and log in to the FTP
+print('Logging in')
+ftp = FTP(ftpdir)
+ftp.login('anonymous',password)
+
+# Change to the directory where the files are on the FTP
+print('Changing to '+ directory)
+ftp.cwd(directory)
+
+# Get a list of the files in the FTP directory
+files = ftp.nlst()
+files = files[2:]
+print(files)
+
+#Change to the destination directory on own computer where you want to save the files
+os.chdir(destdir)
+
+#Download all the files within the FTP directory
+for file in files:
+    print('Downloading...' + file)
+    ftp.retrbinary('RETR ' + file, open(file, 'wb').write)
+
+#Close the FTP connection
+ftp.quit()
+```
+#How to Load Sea Ice Index Data into a Pandas DataFrame
+
+After downloading the Sea Ice Index data, we need to load it into Python and transform it into a format that is easy to work with. For this, we will use the Pandas library, a powerful data manipulation tool that allows us to easily handle and analyze large datasets. To start, we will load the Sea Ice Index data into a Pandas DataFrame.Once we have the data in a DataFrame, we can start exploring it to gain insights about the trends and patterns of the Arctic sea ice over time.
+
+```{python}
+import pandas as pd
+import openpyxl
+
+
+# Read Excel file into pandas DataFrame
+df = pd.read_excel("Sea_Ice_Index_Monthly_Data_by_Year_G02135_v3.0.xlsx", sheet_name="NH-Extent")
+
+# Print the first 5 rows of the DataFrame
+print(df.head())
+
+# Display some basic statistics of the DataFrame
+print(df.describe())
+
+```
+
+#Tidying up Data with Python's Pandas Library
+Once we have loaded the Sea Ice Index data into a Pandas DataFrame, it is important to make sure that the data is properly formatted and tidy for analysis. Pandas provides a powerful set of tools for cleaning and transforming data. In this blog post, we will explore how to tidy up our dataset using Pandas. Specifically, we will discuss how to rename columns, remove unwanted columns, and transform data from wide to long format.
+
+```{python}
+
+# rename 'Unnamed: 0' column to 'Year'
+df = df.rename(columns={'Unnamed: 0': 'Year'})
+
+# remove 'Unnamed: 13' column
+df = df.drop(columns=['Unnamed: 13'])
+
+# transform the data frame from wide to long format
+df = pd.melt(df, id_vars=['Year'], value_vars=['January','February', 'March','April','May','June','July','August','September','October', 'November', 'December'], var_name='Month', value_name='Value')
+df=df.dropna()
+```
+
+One step in tidying up the data is to ensure that the column names are meaningful and consistent. In the code above, we renamed the 'Unnamed: 0' column to 'Year' using the rename method provided by Pandas. This method takes a dictionary where the keys are the original column names, and the values are the new column names. This can help make the data more readable and easier to work with.
+
+Another step in tidying up the data is to remove any unwanted columns that do not contain relevant information. In the code above, we used the drop method to remove the 'Unnamed: 13' column from the dataset. This method takes the name of the column to be removed as an argument.
+
+Finally, it is important to make sure that the data is in the appropriate format for analysis. In the code above, we transformed the data from wide to long format using the melt method. This method takes a DataFrame and transforms it into a new DataFrame where each row represents a unique combination of the specified id_vars and value_vars. In this case, we specified 'Year' as the id_vars and 'January', 'February', 'March', 'October', 'November', and 'December' as the value_vars. The resulting DataFrame had a new column called 'Month', which contained the names of the months, and a new column called 'Value', which contained the corresponding values for each month. Any rows containing missing values were removed using the dropna method to ensure that only complete data was used for analysis.
+
+#Exploratory Data Analysis (EDA) of Sea Ice Index Data
+Exploratory Data Analysis (EDA) is an essential step in understanding any dataset, and the Sea Ice Index dataset is no exception. In this dataset, each row corresponds to a specific year and month, and the corresponding value represents the sea ice extent for that month. The dataset spans from 1979 to the present day and is a valuable resource for understanding the trends and patterns of Arctic sea ice.
+
+```{python}
+import matplotlib.pyplot as plt
+
+# Set the figure size and font style
+plt.figure(figsize=(20, 10))
+plt.rcParams.update({'font.size': 14})
+
+# Group the data by year and calculate the mean value for each year
+grouped = df.groupby('Year').mean()
+
+# Create the line plot
+plt.plot(grouped.index, grouped['Value'], marker='o')
+
+# Set the title and axis labels
+plt.title('Arctic Sea Ice Extent Over Time')
+plt.xlabel('Year')
+plt.ylabel('Average Sea Ice Extent (million sq km)')
+
+# Show the plot
+plt.show()
+```
+
+#Seasonal Patterns of Arctic Sea Ice
+
+In addition to analyzing the average sea ice extent over time, we can also investigate the seasonal patterns of Arctic sea ice. To do this, we can create seasonal subplots of the sea ice extent for each year in the dataset. These subplots show the sea ice extent for each month of the year, allowing us to see how the extent changes throughout the year.
+
+```{python}
+import matplotlib.pyplot as plt
+
+# Create a line plot of the monthly values over time
+fig, ax = plt.subplots()
+for month in data['Month'].unique():
+    ax.plot(df[df['Month'] == month]['Year'], df[df['Month'] == month]['Value'], label=month)
+# add a legend and place it outside the plot
+ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+ax.set_title('Seasonal Variation in Northern Hemisphere \nSea Ice Extent (1979-2022)', y=1.05)
+ax.set_xlabel('Year')
+ax.set_ylabel('Sea Ice Extent (million square km)')
+plt.tight_layout()
+plt.show()
+
+```
+```{python}
+
+# Read Excel file into pandas DataFrame
+df2 = pd.read_excel("Sea_Ice_Index_Monthly_Data_by_Year_G02135_v3.0.xlsx", sheet_name="SH-Extent")
+# rename 'Unnamed: 0' column to 'Year'
+df2 = df.rename(columns={'Unnamed: 0': 'Year'})
+
+# remove 'Unnamed: 13' column
+df2 = df2.drop(columns=['Unnamed: 13'])
+
+# transform the data frame from wide to long format
+df2 = pd.melt(df2, id_vars=['Year'], value_vars=['January', 'February', 'March', 'October', 'November', 'December'], var_name='Month', value_name='Value')
+df2=df2.dropna()
+
+
+```
+
+#Conclusion
+
+In this blog post, we explored changes in Arctic sea ice over time using Python and the Sea Ice Index. We walked through the steps to download the Sea Ice Index data from NSIDC, load it into a Pandas DataFrame, and perform exploratory data analysis. We also discussed how to tidy up the data using Pandas and visualized the changes in Arctic sea ice using Matplotlib. By analyzing the Sea Ice Index data, we were able to gain insights into the trends and patterns of Arctic sea ice over time and the impact of climate change on this vital ecosystem. The skills and techniques we used in this blog post can be applied to other climate datasets, allowing us to gain a deeper understanding of the world around us.

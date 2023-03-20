@@ -18,7 +18,7 @@ image:
   preview_only: no
 projects: []
 ---
-My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of woman are CEOs? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
+My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of women are CEOs? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
 
 I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The author of this dataset pulled the data by scraping the [fortune website](https://fortune.com/){target="_blank"}. He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}. I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.
 
@@ -66,6 +66,7 @@ My first question to answer is how many woman are CEOs. I was quickly able to se
 wf= df['ceo_woman'].value_counts(normalize=True).to_frame()
 # Make pie chart of woman vs. men ceos
 labels = "Male","Female"
+colors = ["blue", "purple"]
 plt.title("Percentage of Male Vs. Female CEOs")
 plt.pie(wf["ceo_woman"],labels = labels, autopct = '%.1f%%',
         wedgeprops = {"edgecolor" : "black",
