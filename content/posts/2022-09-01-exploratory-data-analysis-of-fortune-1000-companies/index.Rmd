@@ -18,11 +18,11 @@ image:
   preview_only: no
 projects: []
 ---
-My girlfriend recently just got a new job at a Fortune 1000 company and it led me to ask many different questions. What percent of women are CEOs? Which states have the most fortune 1000 companies? What are the top profitable companies? The list went on and on.. So I quickly went to google and tried to find a dataset that will allow me to answer some of these questions using python.
+#Introduction to Exploring Fortune 1000 Companies Data using Python
 
-I stumbled across a great [dataset](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The author of this dataset pulled the data by scraping the [fortune website](https://fortune.com/){target="_blank"}. He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}. I highly recommend checking it out if you are interested in learning more. The data is for the year 2021.
+My girlfriend recently got a new job at a Fortune 1000 company, which led me to ask various questions. I wanted to know the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one [here](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The author of this dataset scraped data from the [fortune website](https://fortune.com/){target="_blank"}. He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}. I highly recommend checking it out if you are interested in learning more. The dataset contains data for the year 2021.
 
-Before I go into explaining how to pull the data into python and the code behind the analysis, I want to touch on what exploratory data analysis even means! Exploratory data analysis, or EDA for short, is a very useful process that data scientists/data analysts use to analyze and investigate data sets. It allows you to gain insights into the main characteristics of your data. Most times this is accomplished by employing different data visulization methods.
+Before explaining how to extract the data using Python and the code for analysis, I'd like to touch on the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.
 
 ```{r setup, include=FALSE,message=FALSE,warning=FALSE, results = 'hide'}
 
