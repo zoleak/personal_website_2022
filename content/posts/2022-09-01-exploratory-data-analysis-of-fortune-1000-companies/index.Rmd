@@ -19,11 +19,13 @@ image:
 projects: []
 ---
 #Introduction to Exploring Fortune 1000 Companies Data using Python
+As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on [Kaggle](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the [fortune website](https://fortune.com/){target="_blank"} by the dataset [author](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}.
 
-My girlfriend recently got a new job at a Fortune 1000 company, which led me to ask various questions. I wanted to know the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one [here](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The author of this dataset scraped data from the [fortune website](https://fortune.com/){target="_blank"}. He goes into great detail on how he accomplished this in this [blog post](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}. I highly recommend checking it out if you are interested in learning more. The dataset contains data for the year 2021.
+Before diving into the analysis, let's discuss the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.
 
-Before explaining how to extract the data using Python and the code for analysis, I'd like to touch on the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.
+To begin the analysis, I used Python, along with the Pandas, Seaborn, Squarify, and Matplotlib libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, Squarify was used to create a treemap, and Matplotlib was used for additional data visualization.
 
+Here's the Python code used to import the necessary libraries:
 ```{r setup, include=FALSE,message=FALSE,warning=FALSE, results = 'hide'}
 
 library(reticulate)
@@ -36,7 +38,7 @@ py_install("matplotlib")
 ```
 
 
-#### Import modules used for analysis
+#### Import libraries used for analysis
 ```{python}
 import numpy as np
 import pandas as pd
@@ -49,8 +51,7 @@ import seaborn as sns
 
 #### Read in data and perform EDA
 
- The ```pandas``` package can be used to read in csv files. After the data is read into python, it's always best to view the structure of your data and view the first few rows.
-
+After importing the necessary libraries, I read in the dataset using the ```pandas``` library, and then checked the structure of the data and the first few rows using the following code:
 ```{python, echo=T, warning=F, message=F}
 df = pd.read_csv("Fortune_1000.csv") # Read csv file into python
 
@@ -59,7 +60,8 @@ df.head(n=10)
 ```
 
 
-My first question to answer is how many woman are CEOs. I was quickly able to see this by making a pie chart. As you can see from the chart, there are only 6.8% woman CEOs. 
+Next, I wanted to find out the percentage of women who are CEOs. To do this, I used the ```value_counts()``` method in Pandas to count the number of female and male CEOs, and then created a pie chart using Matplotlib to visualize the results:
+
 
 ```{python, echo=T, warning=F, message=F}
 # Find out percent of woman CEOs
@@ -76,8 +78,9 @@ plt.pie(wf["ceo_woman"],labels = labels, autopct = '%.1f%%',
 plt.show()
                       
 ```                      
+From the pie chart, it's clear that only 6.8% of Fortune 1000 companies are led by female CEOs.
 
-Next, lets see which states have the most companies. I will use a treemap to show this. Although this probably isn't the best chart to show this I thought it seemed pretty cool. California came out on top with 121.
+Next, I wanted to see which states have the most Fortune 1000 companies. I used the ```value_counts()``` method in Pandas to count the number of companies in each state, and then created a treemap using Squarify to visualize the results:
 
 ```{python, echo=F, warning=F, message=F}
 
@@ -94,9 +97,15 @@ plt.axis('off')
 plt.title('Top 10 States with the most headquarters')
 plt.show() 
 ```
+This code uses pandas and squarify libraries to create a treemap that shows the top 20 states with the most Fortune 1000 companies.
 
-Lastly, I want to compare profit vs. revenue in a bar plot. 
+First, the code creates a DataFrame 'state_count' using the value_counts() method to count the number of times each state appears in the 'state' column of the original DataFrame 'df'. The resulting DataFrame is then sorted in descending order using nlargest() function to get the top 20 states with the most companies.
 
+The sizes and labels for the treemap are then created. The sizes variable is a list of the 'counts' column of the 'state_count' DataFrame, while the labels variable is a list comprehension that creates a string for each state and its count in the format 'state\ncount'.
+
+Finally, the squarify library is used to create the treemap. The sizes and labels variables are passed to the squarify.plot() method, along with a color map and an alpha value to adjust the opacity of the squares. The plt.axis() method is used to turn off the x and y axis labels and the title of the plot is set using plt.title(). The resulting treemap shows the states with the most Fortune 1000 companies in a visually appealing way.
+
+To wrap up, let's take a look at how we can compare profit and revenue in a bar plot. We can use this visual tool to gain insights into the performance of the top five Fortune 1000 companies. To achieve this, we melted the data to create a tidy format, then used Seaborn to create a clean and informative bar plot. Additionally, we created a table to show the percentage change in revenue to profit for each company.
 ```{python, echo=T, warning=F, message=F, results = 'hide'}
 # Profit vs. revenue in bar plot
 rev_prof = df.nlargest(5,'revenue')
@@ -128,7 +137,11 @@ the_table.auto_set_font_size(False)
 the_table.set_fontsize(6)
 
 plt.show()
+
 ```
 
-As you can see, there are numerous different approaches on how to use EDA techniques to gain insights from data. These are just the tip of the iceburg. I recommend checking out [Python Plot Gallery](https://www.python-graph-gallery.com){target = "_blank"} to gain a sense of all the different plots you can create. It's a great resource to see whats possible!
+These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the [Python Plot Gallery](https://www.python-graph-gallery.com){target = "_blank"}. It's an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.
+
+
+
 

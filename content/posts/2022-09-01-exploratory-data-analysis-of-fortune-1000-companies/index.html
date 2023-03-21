@@ -1,0 +1,133 @@
+---
+title: Exploratory Data Analysis of Fortune 1000 Companies
+author: Kevin Zolea
+date: '2022-09-01'
+slug: exploratory-data-analysis-of-fortune-1000-companies
+categories:
+  - Python
+tags:
+  - Python
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-09-01T16:12:33-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>#Introduction to Exploring Fortune 1000 Companies Data using Python
+As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021" target="_blank">Kaggle</a> that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the <a href="https://fortune.com/" target="_blank">fortune website</a> by the dataset <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook" target="_blank">author</a>.</p>
+<p>Before diving into the analysis, let’s discuss the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.</p>
+<p>To begin the analysis, I used Python, along with the Pandas, Seaborn, Squarify, and Matplotlib libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, Squarify was used to create a treemap, and Matplotlib was used for additional data visualization.</p>
+<p>Here’s the Python code used to import the necessary libraries:</p>
+<div id="import-libraries-used-for-analysis" class="section level4">
+<h4>Import libraries used for analysis</h4>
+<pre class="python"><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import squarify # makes tree map
+import seaborn as sns</code></pre>
+</div>
+<div id="read-in-data-and-perform-eda" class="section level4">
+<h4>Read in data and perform EDA</h4>
+<p>After importing the necessary libraries, I read in the dataset using the <code>pandas</code> library, and then checked the structure of the data and the first few rows using the following code:</p>
+<pre class="python"><code>df = pd.read_csv(&quot;Fortune_1000.csv&quot;) # Read csv file into python
+
+df.dtypes # see structure of data</code></pre>
+<pre><code>## company               object
+## rank                   int64
+## rank_change          float64
+## revenue              float64
+## profit               float64
+## num. of employees      int64
+## sector                object
+## city                  object
+## state                 object
+## newcomer              object
+## ceo_founder           object
+## ceo_woman             object
+## profitable            object
+## prev_rank             object
+## CEO                   object
+## Website               object
+## Ticker                object
+## Market Cap            object
+## dtype: object</code></pre>
+<pre class="python"><code>df.head(n=10)</code></pre>
+<pre><code>##               company  rank  ...  Ticker  Market Cap
+## 0             Walmart     1  ...     WMT      411690
+## 1              Amazon     2  ...    AMZN     1637405
+## 2         Exxon Mobil     3  ...     XOM      177923
+## 3               Apple     4  ...    AAPL     2221176
+## 4          CVS Health     5  ...     CVS       98496
+## 5  Berkshire Hathaway     6  ...    BRKA      550878
+## 6  UnitedHealth Group     7  ...     UNH      332885
+## 7            McKesson     8  ...     MCK       29570
+## 8                AT&amp;T     9  ...       T      206369
+## 9   AmerisourceBergen    10  ...     ABC       21246
+## 
+## [10 rows x 18 columns]</code></pre>
+<p>Next, I wanted to find out the percentage of women who are CEOs. To do this, I used the <code>value_counts()</code> method in Pandas to count the number of female and male CEOs, and then created a pie chart using Matplotlib to visualize the results:</p>
+<pre class="python"><code># Find out percent of woman CEOs
+wf= df[&#39;ceo_woman&#39;].value_counts(normalize=True).to_frame()
+# Make pie chart of woman vs. men ceos
+labels = &quot;Male&quot;,&quot;Female&quot;
+colors = [&quot;blue&quot;, &quot;purple&quot;]
+plt.title(&quot;Percentage of Male Vs. Female CEOs&quot;)
+plt.pie(wf[&quot;ceo_woman&quot;],labels = labels, autopct = &#39;%.1f%%&#39;,
+        wedgeprops = {&quot;edgecolor&quot; : &quot;black&quot;,
+                      &#39;linewidth&#39;: 1,
+                      &#39;antialiased&#39;: True})
+                      </code></pre>
+<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x7f97e1a68e20&gt;, &lt;matplotlib.patches.Wedge object at 0x7f97e1a7f460&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
+<pre class="python"><code>plt.show()
+                      </code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+From the pie chart, it’s clear that only 6.8% of Fortune 1000 companies are led by female CEOs.</p>
+<p>Next, I wanted to see which states have the most Fortune 1000 companies. I used the <code>value_counts()</code> method in Pandas to count the number of companies in each state, and then created a treemap using Squarify to visualize the results:</p>
+<pre><code>## (0.0, 100.0, 0.0, 100.0)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-3.png" width="672" />
+This code uses pandas and squarify libraries to create a treemap that shows the top 20 states with the most Fortune 1000 companies.</p>
+<p>First, the code creates a DataFrame ‘state_count’ using the value_counts() method to count the number of times each state appears in the ‘state’ column of the original DataFrame ‘df’. The resulting DataFrame is then sorted in descending order using nlargest() function to get the top 20 states with the most companies.</p>
+<p>The sizes and labels for the treemap are then created. The sizes variable is a list of the ‘counts’ column of the ‘state_count’ DataFrame, while the labels variable is a list comprehension that creates a string for each state and its count in the format ‘state’.</p>
+<p>Finally, the squarify library is used to create the treemap. The sizes and labels variables are passed to the squarify.plot() method, along with a color map and an alpha value to adjust the opacity of the squares. The plt.axis() method is used to turn off the x and y axis labels and the title of the plot is set using plt.title(). The resulting treemap shows the states with the most Fortune 1000 companies in a visually appealing way.</p>
+<p>To wrap up, let’s take a look at how we can compare profit and revenue in a bar plot. We can use this visual tool to gain insights into the performance of the top five Fortune 1000 companies. To achieve this, we melted the data to create a tidy format, then used Seaborn to create a clean and informative bar plot. Additionally, we created a table to show the percentage change in revenue to profit for each company.</p>
+<pre class="python"><code># Profit vs. revenue in bar plot
+rev_prof = df.nlargest(5,&#39;revenue&#39;)
+rev_prof = pd.melt(rev_prof,id_vars = [&#39;company&#39;],value_vars = [&#39;revenue&#39;,&#39;profit&#39;])
+sns.set_theme(style=&quot;whitegrid&quot;)
+sns.set_color_codes(&quot;pastel&quot;)
+p1 =sns.barplot(x=&quot;value&quot;, y=&quot;company&quot;,hue = &quot;variable&quot;,data= rev_prof)
+p1.set_title(&quot;Profit Vs. Revenue for Top 5 Fortune 1000 Companies&quot;)
+p1.set(xlabel=&#39;Millions ($)&#39;, ylabel=&quot;&quot;)
+
+# Make table to put next to plot to show percent change in rev to prof
+df2 = df.nlargest(5,&#39;revenue&#39;)
+#define custom function
+def find_change(df2):
+    change = (df2[&#39;profit&#39;]/df2[&#39;revenue&#39;])*100
+    return(change)
+df3 = df2.groupby(&#39;company&#39;).apply(find_change).reset_index()
+df3=df3.round()
+#per_change = rev_prof.groupby(&#39;company&#39;,&#39;variable&#39;,&#39;value&#39;).assign(percent_change = (&#39;&#39;))
+# Put barplot and table together in same plot
+
+plt.subplots_adjust(left=0.2, bottom=0.4)
+
+the_table = plt.table(cellText=df3.values,
+          cellLoc = &#39;center&#39;, rowLoc = &#39;center&#39;,
+          transform=plt.gcf().transFigure,
+          bbox = ([0.3, 0.1, 0.5, 0.2]))
+the_table.auto_set_font_size(False)
+the_table.set_fontsize(6)
+
+plt.show()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-5.png" width="672" /></p>
+<p>These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the <a href="https://www.python-graph-gallery.com">Python Plot Gallery</a>{target = “_blank”}. It’s an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.</p>
+</div>
