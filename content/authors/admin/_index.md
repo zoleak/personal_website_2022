@@ -36,10 +36,8 @@ superuser: true
 title: Kevin Zolea
 ---
 
-As an Environmental Specialist, I work with the Bureau of Air Monitoring to research key issues regarding air quality in New Jersey. As part of our analysis of the vast amounts of data we collect, I use different types of computer software, such as R, Python, ArcGIS, etc.
+As an Environmental Specialist with the Bureau of Air Monitoring in New Jersey, I utilize my expertise in data science to research and analyze air quality data using tools such as R, Python, and ArcGIS. I am passionate about solving critical environmental issues and making data-driven decisions.
 
-Solving critical environmental issues and gaining actionable insight from data ignites my passion. Since most of my work involves making data-driven decisions, I have gained extensive experience with data science techniques. I look forward every day to contributing my skills and knowledge to an environment that will make a difference.
-
-When I am not crunching data or creating solutions for a better environment I can be found shredding the gnar at your local skatepark or ski resort. I love meeting people and learning about new opportunities, so please feel free to reach out to me.
+In my free time, you can find me shredding the gnar at the local skatepark or ski resort. I am always eager to connect with new people and explore new opportunities, so please don't hesitate to reach out
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/resume.pdf" "newtab" >}}resumé{{< /staticref >}}.

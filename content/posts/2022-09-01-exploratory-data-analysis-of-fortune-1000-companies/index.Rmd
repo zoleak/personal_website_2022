@@ -8,7 +8,7 @@ categories:
 tags:
   - Python
 subtitle: ''
-summary: ''
+summary: "Learn how to use Python's powerful data analysis and visualization libraries, Pandas and Seaborn, to explore the Fortune 1000 companies dataset and gain insights into the relationships between different variables."
 authors: []
 lastmod: '2022-09-01T16:12:33-04:00'
 featured: no
@@ -18,7 +18,7 @@ image:
   preview_only: no
 projects: []
 ---
-#Introduction to Exploring Fortune 1000 Companies Data using Python
+# Introduction to Exploring Fortune 1000 Companies Data using Python
 
 As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on [Kaggle](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the [fortune website](https://fortune.com/){target="_blank"} by the dataset [author](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}.
 
@@ -141,7 +141,7 @@ plt.show()
 
 ```
 
-These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the [Python Plot Gallery](https://www.python-graph-gallery.com){target = "_blank"}. It's an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.
+These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the [Python Plot Gallery](https://www.python-graph-gallery.com){target="_blank"}. It's an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.
 
 
 
