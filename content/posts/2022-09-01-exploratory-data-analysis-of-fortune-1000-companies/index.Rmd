@@ -19,11 +19,12 @@ image:
 projects: []
 ---
 #Introduction to Exploring Fortune 1000 Companies Data using Python
+
 As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on [Kaggle](https://www.kaggle.com/datasets/winston56/fortune-500-data-2021){target="_blank"} that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the [fortune website](https://fortune.com/){target="_blank"} by the dataset [author](https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook){target="_blank"}.
 
 Before diving into the analysis, let's discuss the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.
 
-To begin the analysis, I used Python, along with the Pandas, Seaborn, Squarify, and Matplotlib libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, Squarify was used to create a treemap, and Matplotlib was used for additional data visualization.
+To begin the analysis, I used Python, along with the ```Pandas```, ```Seaborn```, ```Squarify``, and ```Matplotlib``` libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, ```Squarify``` was used to create a treemap, and ```Matplotlib``` was used for additional data visualization.
 
 Here's the Python code used to import the necessary libraries:
 ```{r setup, include=FALSE,message=FALSE,warning=FALSE, results = 'hide'}
