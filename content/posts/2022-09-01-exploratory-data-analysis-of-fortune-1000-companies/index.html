@@ -8,7 +8,7 @@ categories:
 tags:
   - Python
 subtitle: ''
-summary: ''
+summary: "Learn how to use Python's powerful data analysis and visualization libraries, Pandas and Seaborn, to explore the Fortune 1000 companies dataset and gain insights into the relationships between different variables."
 authors: []
 lastmod: '2022-09-01T16:12:33-04:00'
 featured: no
@@ -21,10 +21,11 @@ projects: []
 
 
 
-<p>#Introduction to Exploring Fortune 1000 Companies Data using Python
-As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021" target="_blank">Kaggle</a> that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the <a href="https://fortune.com/" target="_blank">fortune website</a> by the dataset <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook" target="_blank">author</a>.</p>
+<div id="introduction-to-exploring-fortune-1000-companies-data-using-python" class="section level1">
+<h1>Introduction to Exploring Fortune 1000 Companies Data using Python</h1>
+<p>As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021" target="_blank">Kaggle</a> that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the <a href="https://fortune.com/" target="_blank">fortune website</a> by the dataset <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook" target="_blank">author</a>.</p>
 <p>Before diving into the analysis, let’s discuss the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.</p>
-<p>To begin the analysis, I used Python, along with the Pandas, Seaborn, Squarify, and Matplotlib libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, Squarify was used to create a treemap, and Matplotlib was used for additional data visualization.</p>
+<p>To begin the analysis, I used Python, along with the <code>Pandas</code>, <code>Seaborn</code>, <code>Squarify``, and</code>Matplotlib<code>libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization,</code>Squarify<code>was used to create a treemap, and</code>Matplotlib``` was used for additional data visualization.</p>
 <p>Here’s the Python code used to import the necessary libraries:</p>
 <div id="import-libraries-used-for-analysis" class="section level4">
 <h4>Import libraries used for analysis</h4>
@@ -85,7 +86,7 @@ plt.pie(wf[&quot;ceo_woman&quot;],labels = labels, autopct = &#39;%.1f%%&#39;,
                       &#39;linewidth&#39;: 1,
                       &#39;antialiased&#39;: True})
                       </code></pre>
-<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x7f97e1a68e20&gt;, &lt;matplotlib.patches.Wedge object at 0x7f97e1a7f460&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
+<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x7fccdad60e20&gt;, &lt;matplotlib.patches.Wedge object at 0x7fccdad77460&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
 <pre class="python"><code>plt.show()
                       </code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
@@ -129,5 +130,6 @@ the_table.set_fontsize(6)
 
 plt.show()</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-5.png" width="672" /></p>
-<p>These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the <a href="https://www.python-graph-gallery.com">Python Plot Gallery</a>{target = “_blank”}. It’s an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.</p>
+<p>These are just a few examples of the many techniques available for EDA. If you want to dive deeper into this topic, I highly recommend checking out the <a href="https://www.python-graph-gallery.com" target="_blank">Python Plot Gallery</a>. It’s an excellent resource to explore the vast array of visualization tools available and discover new ways to gain insights from your data.</p>
+</div>
 </div>
