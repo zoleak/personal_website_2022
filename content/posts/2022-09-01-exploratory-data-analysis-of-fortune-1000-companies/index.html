@@ -25,7 +25,7 @@ projects: []
 <h1>Introduction to Exploring Fortune 1000 Companies Data using Python</h1>
 <p>As a data analyst, one of the most important skills you need to have is the ability to work with data to gain insights and answer questions. Recently, my girlfriend started working for a Fortune 1000 company, which sparked my curiosity about the makeup of these companies. In particular, I was interested in the percentage of women who are CEOs, which states have the most Fortune 1000 companies, and the top profitable companies. To answer these questions, I searched for a suitable dataset on Google and found one on <a href="https://www.kaggle.com/datasets/winston56/fortune-500-data-2021" target="_blank">Kaggle</a> that had exactly what I was looking for. The dataset contained data for the year 2021, and was scraped from the <a href="https://fortune.com/" target="_blank">fortune website</a> by the dataset <a href="https://www.kaggle.com/code/winston56/fortune-500-data-collection/notebook" target="_blank">author</a>.</p>
 <p>Before diving into the analysis, let’s discuss the meaning of exploratory data analysis (EDA). EDA is a valuable process used by data scientists and analysts to investigate and analyze datasets. It helps to identify the main characteristics of the data through various visualization techniques.</p>
-<p>To begin the analysis, I used Python, along with the <code>Pandas</code>, <code>Seaborn</code>, <code>Squarify``, and</code>Matplotlib<code>libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization,</code>Squarify<code>was used to create a treemap, and</code>Matplotlib``` was used for additional data visualization.</p>
+<p>To begin the analysis, I used Python, along with the <code>Pandas</code>, <code>Seaborn</code>, <code>Squarify</code>, and <code>Matplotlib</code> libraries. Pandas was used to read in the dataset, Seaborn was used for data visualization, <code>Squarify</code> was used to create a treemap, and <code>Matplotlib</code> was used for additional data visualization.</p>
 <p>Here’s the Python code used to import the necessary libraries:</p>
 <div id="import-libraries-used-for-analysis" class="section level4">
 <h4>Import libraries used for analysis</h4>
@@ -75,30 +75,17 @@ df.dtypes # see structure of data</code></pre>
 ## 
 ## [10 rows x 18 columns]</code></pre>
 <p>Next, I wanted to find out the percentage of women who are CEOs. To do this, I used the <code>value_counts()</code> method in Pandas to count the number of female and male CEOs, and then created a pie chart using Matplotlib to visualize the results:</p>
-<pre class="python"><code># Find out percent of woman CEOs
-wf= df[&#39;ceo_woman&#39;].value_counts(normalize=True).to_frame()
-# Make pie chart of woman vs. men ceos
-labels = &quot;Male&quot;,&quot;Female&quot;
-colors = [&quot;blue&quot;, &quot;purple&quot;]
-plt.title(&quot;Percentage of Male Vs. Female CEOs&quot;)
-plt.pie(wf[&quot;ceo_woman&quot;],labels = labels, autopct = &#39;%.1f%%&#39;,
-        wedgeprops = {&quot;edgecolor&quot; : &quot;black&quot;,
-                      &#39;linewidth&#39;: 1,
-                      &#39;antialiased&#39;: True})
-                      </code></pre>
-<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x7fccdad60e20&gt;, &lt;matplotlib.patches.Wedge object at 0x7fccdad77460&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
-<pre class="python"><code>plt.show()
-                      </code></pre>
+<pre><code>## ([&lt;matplotlib.patches.Wedge object at 0x7ff183548eb0&gt;, &lt;matplotlib.patches.Wedge object at 0x7ff1835604f0&gt;], [Text(-1.074994922300288, 0.23320788371879284, &#39;Male&#39;), Text(1.074994911383038, -0.23320793404293647, &#39;Female&#39;)], [Text(-0.5863608667092479, 0.12720430021025061, &#39;93.2%&#39;), Text(0.5863608607543842, -0.1272043276597835, &#39;6.8%&#39;)])</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 From the pie chart, it’s clear that only 6.8% of Fortune 1000 companies are led by female CEOs.</p>
 <p>Next, I wanted to see which states have the most Fortune 1000 companies. I used the <code>value_counts()</code> method in Pandas to count the number of companies in each state, and then created a treemap using Squarify to visualize the results:</p>
 <pre><code>## (0.0, 100.0, 0.0, 100.0)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-3.png" width="672" />
-This code uses pandas and squarify libraries to create a treemap that shows the top 20 states with the most Fortune 1000 companies.</p>
-<p>First, the code creates a DataFrame ‘state_count’ using the value_counts() method to count the number of times each state appears in the ‘state’ column of the original DataFrame ‘df’. The resulting DataFrame is then sorted in descending order using nlargest() function to get the top 20 states with the most companies.</p>
+This code uses <code>pandas</code> and <code>squarify</code> libraries to create a treemap that shows the top 20 states with the most Fortune 1000 companies.</p>
+<p>First, the code creates a DataFrame ‘state_count’ using the <code>value_counts()</code> method to count the number of times each state appears in the ‘state’ column of the original DataFrame ‘df’. The resulting DataFrame is then sorted in descending order using nlargest() function to get the top 20 states with the most companies.</p>
 <p>The sizes and labels for the treemap are then created. The sizes variable is a list of the ‘counts’ column of the ‘state_count’ DataFrame, while the labels variable is a list comprehension that creates a string for each state and its count in the format ‘state’.</p>
-<p>Finally, the squarify library is used to create the treemap. The sizes and labels variables are passed to the squarify.plot() method, along with a color map and an alpha value to adjust the opacity of the squares. The plt.axis() method is used to turn off the x and y axis labels and the title of the plot is set using plt.title(). The resulting treemap shows the states with the most Fortune 1000 companies in a visually appealing way.</p>
-<p>To wrap up, let’s take a look at how we can compare profit and revenue in a bar plot. We can use this visual tool to gain insights into the performance of the top five Fortune 1000 companies. To achieve this, we melted the data to create a tidy format, then used Seaborn to create a clean and informative bar plot. Additionally, we created a table to show the percentage change in revenue to profit for each company.</p>
+<p>Finally, the squarify library is used to create the treemap. The sizes and labels variables are passed to the <code>squarify.plot()</code> method, along with a color map and an alpha value to adjust the opacity of the squares. The <code>plt.axis()</code> method is used to turn off the x and y axis labels and the title of the plot is set using <code>plt.title()</code>. The resulting treemap shows the states with the most Fortune 1000 companies in a visually appealing way.</p>
+<p>To wrap up, let’s take a look at how we can compare profit and revenue in a bar plot. We can use this visual tool to gain insights into the performance of the top five Fortune 1000 companies. To achieve this, we melted the data to create a tidy format, then used <code>Seaborn</code> to create a clean and informative bar plot. Additionally, we created a table to show the percentage change in revenue to profit for each company.</p>
 <pre class="python"><code># Profit vs. revenue in bar plot
 rev_prof = df.nlargest(5,&#39;revenue&#39;)
 rev_prof = pd.melt(rev_prof,id_vars = [&#39;company&#39;],value_vars = [&#39;revenue&#39;,&#39;profit&#39;])
