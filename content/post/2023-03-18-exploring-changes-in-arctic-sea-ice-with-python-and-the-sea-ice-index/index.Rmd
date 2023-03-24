@@ -85,38 +85,71 @@ ftp.quit()
 ```
 #How to Load Sea Ice Index Data into a Pandas DataFrame
 
-After downloading the Sea Ice Index data, we need to load it into Python and transform it into a format that is easy to work with. For this, we will use the Pandas library, a powerful data manipulation tool that allows us to easily handle and analyze large datasets. To start, we will load the Sea Ice Index data into a Pandas DataFrame.Once we have the data in a DataFrame, we can start exploring it to gain insights about the trends and patterns of the Arctic sea ice over time.
+To perform data analysis on the Sea Ice Index data, we first need to load the Excel workbook into Python and transform it into a format that is easy to work with. For this, we will use the ```Pandas``` library, a powerful data manipulation tool that allows us to easily handle and analyze large datasets.
+
+Before getting started, it's important to review each sheet in the Excel workbook to understand the data structure. There are separate sheets for the northern hemisphere extent, southern hemisphere extent, northern hemisphere area, and southern hemisphere area.
+
+We can use the ```read_excel()``` function from Pandas to load the Sea Ice Index data into a dictionary of Pandas DataFrames. The ```sheet_name``` parameter can be used to specify which sheet in the Excel workbook we want to load.
 
 ```{python}
 import pandas as pd
 import openpyxl
 
+# Read Excel file into a dictionary of Pandas DataFrames
+file_path = "Sea_Ice_Index_Monthly_Data_by_Year_G02135_v3.0.xlsx"
+excel_data = pd.read_excel(file_path, sheet_name=None)
 
-# Read Excel file into pandas DataFrame
-df = pd.read_excel("Sea_Ice_Index_Monthly_Data_by_Year_G02135_v3.0.xlsx", sheet_name="NH-Extent")
+# Load each sheet into a separate DataFrame
+north_df_extent = excel_data["NH-Extent"]
+south_df_extent = excel_data["SH-Extent"]
+north_df_area = excel_data["NH-Area"]
+south_df_area = excel_data["SH-Area"]
 
-# Print the first 5 rows of the DataFrame
-print(df.head())
+# Print the first 5 rows and some basic statistics of each worksheet
+for sheet_name, sheet_data in df.items():
+    print(f"---{sheet_name}---")
+    print(sheet_data.head())
+    print(sheet_data.describe())
 
-# Display some basic statistics of the DataFrame
-print(df.describe())
 
 ```
+In this example, we load the Sea Ice Index data into a dictionary of Pandas DataFrames, where each sheet is a separate DataFrame with the sheet name as the key in the dictionary. We can then load each sheet into a separate Pandas DataFrame by accessing the key of the corresponding sheet.
+
+The for loop iterates over the items in the dictionary that we created in the previous code block. The dictionary keys are the names of the sheets in the Excel workbook, and the corresponding values are the Pandas DataFrames that contain the data from each sheet.
+
+For each sheet, the for loop prints out the sheet name and the first 5 rows of data, as well as some basic statistics of the sheet. This allows us to quickly check that the data has been loaded correctly and get an idea of what it looks like.
+
+By using a for loop to iterate over the dictionary items, we can easily apply the same operations to each sheet of data in the dictionary without having to repeat the same code multiple times. This makes our code more efficient and easier to maintain.
 
 #Tidying up Data with Python's Pandas Library
-Once we have loaded the Sea Ice Index data into a Pandas DataFrame, it is important to make sure that the data is properly formatted and tidy for analysis. Pandas provides a powerful set of tools for cleaning and transforming data. In this blog post, we will explore how to tidy up our dataset using Pandas. Specifically, we will discuss how to rename columns, remove unwanted columns, and transform data from wide to long format.
+In the previous section, we learned how to load the Sea Ice Index data into a dictionary of Pandas DataFrames. However, before we can analyze the data, we need to ensure that it is properly formatted and tidy. Fortunately, Pandas provides powerful tools for cleaning and transforming data. Specifically, we will discuss how to rename columns, remove unwanted columns, and transform data from wide to long format.
 
 ```{python}
 
-# rename 'Unnamed: 0' column to 'Year'
-df = df.rename(columns={'Unnamed: 0': 'Year'})
+new_df_list = []
+for df in df_list:
+    # rename 'Unnamed: 0' column to 'Year'
+    df = df.rename(columns={'Unnamed: 0': 'Year'})
 
-# remove 'Unnamed: 13' column
-df = df.drop(columns=['Unnamed: 13'])
+    # remove 'Unnamed: 13' column
+    df = df.drop(columns=['Unnamed: 13'])
 
-# transform the data frame from wide to long format
-df = pd.melt(df, id_vars=['Year'], value_vars=['January','February', 'March','April','May','June','July','August','September','October', 'November', 'December'], var_name='Month', value_name='Value')
-df=df.dropna()
+    # remove rows for the year 2013
+    df = df[df['Year'] != 2023]
+
+    # transform the data frame from wide to long format
+    df = pd.melt(df, id_vars=['Year'], value_vars=['January','February', 'March','April','May','June','July','August','September','October', 'November', 'December'], var_name='Month', value_name='Value')
+    df = df.dropna()
+
+    # check if the transformed data frame is not empty
+    if not df.empty:
+        # append the transformed data frame to the new list
+        new_df_list.append(df)
+
+# unpack the new list into separate data frames
+north_df_extent_long, south_df_extent_long, north_df_area_long, south_df_area_long = new_df_list
+
+
 ```
 
 One step in tidying up the data is to ensure that the column names are meaningful and consistent. In the code above, we renamed the 'Unnamed: 0' column to 'Year' using the rename method provided by Pandas. This method takes a dictionary where the keys are the original column names, and the values are the new column names. This can help make the data more readable and easier to work with.
@@ -132,19 +165,31 @@ Exploratory Data Analysis (EDA) is an essential step in understanding any datase
 import matplotlib.pyplot as plt
 
 # Set the figure size and font style
-plt.figure(figsize=(20, 10))
+plt.figure(figsize=(10, 6))
 plt.rcParams.update({'font.size': 14})
 
-# Group the data by year and calculate the mean value for each year
-grouped = df.groupby('Year').mean()
+# Group the northern hemisphere data by year and calculate the mean value for each year
+north_grouped = north_df_extent_long.groupby('Year').mean()
 
-# Create the line plot
-plt.plot(grouped.index, grouped['Value'], marker='o')
+# Group the southern hemisphere data by year and calculate the mean value for each year
+south_grouped = south_df_extent_long.groupby('Year').mean()
+
+# Create the line plots
+plt.plot(north_grouped.index, north_grouped['Value'], marker='o', linestyle='-', linewidth=2, label='Northern Hemisphere')
+plt.plot(south_grouped.index, south_grouped['Value'], marker='s', linestyle='-', linewidth=2, label='Southern Hemisphere')
 
 # Set the title and axis labels
-plt.title('Arctic Sea Ice Extent Over Time')
+plt.title('Trends in Arctic and Antarctic Sea Ice Extent Over Time')
 plt.xlabel('Year')
 plt.ylabel('Average Sea Ice Extent (million sq km)')
+plt.style.use('default')
+
+
+# Add a legend
+plt.legend()
+
+# take out grid lines
+plt.grid(false)
 
 # Show the plot
 plt.show()
@@ -159,8 +204,8 @@ import matplotlib.pyplot as plt
 
 # Create a line plot of the monthly values over time
 fig, ax = plt.subplots()
-for month in data['Month'].unique():
-    ax.plot(df[df['Month'] == month]['Year'], df[df['Month'] == month]['Value'], label=month)
+for month in north_df_extent['Month'].unique():
+    ax.plot(north_df_extent[north_df_extent['Month'] == month]['Year'], north_df_extent[north_df_extent['Month'] == month]['Value'], label=month)
 # add a legend and place it outside the plot
 ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 ax.set_title('Seasonal Variation in Northern Hemisphere \nSea Ice Extent (1979-2022)', y=1.05)
@@ -170,23 +215,12 @@ plt.tight_layout()
 plt.show()
 
 ```
+
 ```{python}
-
-# Read Excel file into pandas DataFrame
-df2 = pd.read_excel("Sea_Ice_Index_Monthly_Data_by_Year_G02135_v3.0.xlsx", sheet_name="SH-Extent")
-# rename 'Unnamed: 0' column to 'Year'
-df2 = df.rename(columns={'Unnamed: 0': 'Year'})
-
-# remove 'Unnamed: 13' column
-df2 = df2.drop(columns=['Unnamed: 13'])
-
-# transform the data frame from wide to long format
-df2 = pd.melt(df2, id_vars=['Year'], value_vars=['January', 'February', 'March', 'October', 'November', 'December'], var_name='Month', value_name='Value')
-df2=df2.dropna()
 
 
 ```
 
 #Conclusion
 
-In this blog post, we explored changes in Arctic sea ice over time using Python and the Sea Ice Index. We walked through the steps to download the Sea Ice Index data from NSIDC, load it into a Pandas DataFrame, and perform exploratory data analysis. We also discussed how to tidy up the data using Pandas and visualized the changes in Arctic sea ice using Matplotlib. By analyzing the Sea Ice Index data, we were able to gain insights into the trends and patterns of Arctic sea ice over time and the impact of climate change on this vital ecosystem. The skills and techniques we used in this blog post can be applied to other climate datasets, allowing us to gain a deeper understanding of the world around us.
+In this blog post, we explored changes in Arctic/Antarctic sea ice over time using Python and the Sea Ice Index. We walked through the steps to download the Sea Ice Index data from NSIDC, load it into a Pandas DataFrame, and perform exploratory data analysis. We also discussed how to tidy up the data using Pandas and visualized the changes in sea ice using Matplotlib. By analyzing the Sea Ice Index data, we were able to gain insights into the trends and patterns of Arctic sea ice over time and the impact of climate change on this vital ecosystem. The skills and techniques we used in this blog post can be applied to other climate datasets, allowing us to gain a deeper understanding of the world around us.

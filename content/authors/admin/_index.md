@@ -40,4 +40,4 @@ As an Environmental Specialist with the Bureau of Air Monitoring in New Jersey, 
 
 In my free time, you can find me shredding the gnar at the local skatepark or ski resort. I am always eager to connect with new people and explore new opportunities, so please don't hesitate to reach out
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/resume.pdf" "newtab" >}}resumé{{< /staticref >}}.
+<!-- {{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/resume.pdf" "newtab" >}}resumé{{< /staticref >}}.-->
